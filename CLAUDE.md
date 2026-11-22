@@ -67,7 +67,7 @@ sources: [ijepa, meta-ijepa-blog]
 - 每個內容頁 `<section data-wiki="concepts/jepa.md#錨點,...">`，頁尾 `<footer class="src">` 列出可點的 Wiki 頁（連到 GitHub）。
 - 簡報裡的數字必須出現在它引用的 Wiki 頁。
 - 數學只放一個式子（L2 距離）；VICReg 只講直覺。
-- **先寫 `slides/outline.md`，跑 `python3 scripts/check_outline.py` 到 errors=0，才寫 HTML**（run-2 加入）。大綱每頁要有「但書」欄：引用的 Wiki 頁有「注意」段落時必填，或寫「無：理由」。
+- **先寫 `slides/outline.md`，跑 `python3 scripts/check_outline.py` 到 errors=0，才寫 HTML**（run-2 加入）。大綱每頁要有「但書」欄：引用的 Wiki 頁有「注意」段落時必填，或寫「無：理由」。**理由不能是「放到別頁」**：引用了那一頁的數字或結論，那一頁的但書就要寫在同一頁（run-2 語意複查發現的漏洞；目前靠語意檢查把關，程式沒有擋）。
 - 簡報不能出現 Wiki 沒有的最高級說法（最大、最好…）；Wiki 標（AI 補充）的內容在簡報要放 `.ai-note` 框。
 - `python3 scripts/check_slides.py` errors=0、語意檢查無 UNSUPPORTED／MISLEADING、`node scripts/check_browser.mjs` 無溢出，才算完成。
 
