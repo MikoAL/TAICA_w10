@@ -1,5 +1,5 @@
 OK slide1 "JEPA 不預測像素， 預測意義" content bottom 644px <= 714px
-OK slide2 "人 20 小時學會開車，AI 呢？" content bottom 403px <= 654px
+OK slide2 "人 20 小時學會開車，AI 呢？" content bottom 434px <= 654px
 OK slide3 "不用標註也能學：自監督學習" content bottom 406px <= 654px
 OK slide4 "三種「猜」法" content bottom 476px <= 654px
 OK slide5 "JEPA 的三個零件" content bottom 478px <= 654px

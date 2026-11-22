@@ -127,7 +127,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 </section>
 
 <!-- 1 動機 -->
-<section data-wiki="concepts/world-model.md#為什麼需要,concepts/world-model.md#是什麼">
+<section data-wiki="concepts/world-model.md#為什麼需要,concepts/world-model.md#是什麼,sources/meta-lecun-blog.md#摘要">
   <h2>人 20 小時學會開車，AI 呢？</h2>
   <div class="cols">
     <div>
@@ -138,16 +138,16 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
       <p>需要上百萬、上十億筆標註資料，還要在虛擬環境試上百萬次。</p>
     </div>
     <div>
-      <h3>LeCun 的答案：world model</h3>
+      <h3>LeCun 主張的關鍵：world model</h3>
       <p>機器內部對「世界怎麼運作」的模型。有了它，機器可以：</p>
       <ul>
         <li>補上感官沒提供的資訊</li>
         <li>預測接下來合理的狀態</li>
       </ul>
-      <p class="muted small">人類靠觀察累積大量背景知識，也就是常識。</p>
+      <p class="muted small">LeCun 認為：差別在於人類靠觀察累積了大量背景知識，也就是常識。</p>
     </div>
   </div>
-  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#為什麼需要">Wiki › world model</a></footer>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#為什麼需要">Wiki › world model</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-lecun-blog.md#摘要">Wiki › Meta LeCun 構想文</a></footer>
   <aside class="notes">重點是「效率差距」。這頁不講技術，只建立問題：怎麼讓機器像人一樣，從觀察學到世界的規則？</aside>
 </section>
 
@@ -187,7 +187,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <h2>JEPA 的三個零件</h2>
   <div class="arch" aria-label="JEPA 架構圖">
     <div class="box in-x">x 看得到的部分</div><div class="arrow">→</div><div class="box">Context encoder</div><div class="arrow">→</div><div class="box pred">Predictor<br><span class="small muted">猜 y 的表示</span></div><div class="arrow">↘</div><div class="box loss">比較兩個表示<br>（L2 距離）</div>
-    <div class="box in-y">y 要猜的區域</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">y 的表示<br><span class="small muted">遮的是輸出，不是輸入</span></div><div class="arrow">↗</div>
+    <div class="box in-y">圖片（輸入不遮）</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">取出 y 區域的表示<br><span class="small muted">遮的是輸出</span></div><div class="arrow">↗</div>
   </div>
   <p class="formula">loss = <sup>1</sup>⁄<sub>M</sub> Σ<sub>i</sub> ‖ ŝ<sub>y<sub>i</sub></sub> − s<sub>y<sub>i</sub></sub> ‖₂²</p>
   <p>白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。</p>
@@ -317,9 +317,9 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 </section>
 
 <!-- 10 JEPA-Anything -->
-<section data-wiki="concepts/orthogonal-predictive-factorization.md#核心想法概念版,sources/jepa-anything.md#問題,sources/jepa-anything.md#論文報告的結果,sources/jepa-anything.md#注意">
+<section data-wiki="concepts/orthogonal-predictive-factorization.md#核心想法概念版,sources/jepa-anything.md#問題,sources/jepa-anything.md#論文報告的結果,sources/jepa-anything.md#注意,concepts/orthogonal-predictive-factorization.md">
   <h2>最新進展：JEPA-Anything（2026）</h2>
-  <p class="muted small">v1 預印本，尚未經過同儕審查。以下結果都是「論文報告」。</p>
+  <p class="muted small">來源只有這一篇 v1 預印本，以下結果都是「論文報告」。</p>
   <div class="cols">
     <div>
       <h3>問題</h3>
@@ -394,7 +394,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 </section>
 
 <!-- 14 自我檢測 -->
-<section data-wiki="concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/collapse.md#怎麼防,concepts/frozen-evaluation.md#為什麼要分清楚">
+<section data-wiki="concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/pixel-vs-feature-prediction.md#生成式預測像素,concepts/collapse.md#怎麼防,concepts/frozen-evaluation.md#為什麼要分清楚">
   <h2>自我檢測</h2>
   <ol class="quiz">
     <li>JEPA 和 MAE 這類生成式方法，loss 算在哪裡不一樣？
@@ -404,7 +404,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
     <li>有人說「JEPA 比 MAE 好」，你應該先問什麼？
       <span class="answer fragment">用哪一種評估？JEPA 的優勢主要在凍結評估和低樣本，完整微調時 I-JEPA 甚至略輸 MAE。</span></li>
   </ol>
-  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
   <aside class="notes">按方向鍵逐一顯示答案。</aside>
 </section>
 
