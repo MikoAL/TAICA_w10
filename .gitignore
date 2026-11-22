@@ -1,0 +1,7 @@
+raw/*
+!raw/SOURCES.md
+node_modules/
+.superpowers/
+__pycache__/
+.pytest_cache/
+logs/**/shots/*.tmp
