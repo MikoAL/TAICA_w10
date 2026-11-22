@@ -50,9 +50,9 @@ sources: [ijepa, meta-ijepa-blog]
 ### Ingest（新增一篇資料）
 1. 下載原文到 `raw/<id>/`，轉成文字檔，核對標題，登記到 `raw/SOURCES.md`。
 2. **先討論**：整理重點（每點附逐字引文）、擬建頁面、要人決定的問題 → 給使用者看 → 使用者的回覆原文記進 `log.md`。
-3. 寫 `wiki/sources/<id>.md`，再新增／更新相關 `concepts/` 頁。
-4. 更新 `index.md`，在 `log.md` 加一筆。
-5. 跑 `python3 scripts/check_wiki.py`，errors=0 才算完成。
+3. 寫 `wiki/sources/<id>.md`，**寫完立刻**跑 `python3 scripts/check_wiki.py` 並修到 errors=0，再寫下一頁（run-2 改：不要整批寫完才檢查）。
+4. 新增／更新相關 `concepts/` 頁，同樣每頁寫完就檢查。表格數字當下對照原文表格列。
+5. 更新 `index.md`，在 `log.md` 加一筆。
 
 ### Query（用 Wiki 回答問題／做簡報）
 - **只讀 `wiki/`，不讀 `raw/`、不靠記憶。** Wiki 沒有的東西，先回到 Ingest 補進 Wiki，再用。
@@ -63,11 +63,15 @@ sources: [ijepa, meta-ijepa-blog]
 
 ## 5. 簡報規則
 - reveal.js 6.0.2（CDN：cdn.jsdelivr.net），單一 `index.html`。
-- 12–15 頁，結構：為什麼 → 自監督 → 三大流派 → JEPA → collapse → I-JEPA（主要範例）→ V-JEPA → 怎麼看數字 → JEPA-Anything → JEPA 輸在哪裡 → LeCun 的大藍圖 → 總結 → 自我檢測。
+- 約 15 頁，結構：為什麼 → 自監督 → 三大流派 → JEPA → collapse → I-JEPA（主要範例）→ V-JEPA → 怎麼看數字 → JEPA-Anything → JEPA 輸在哪裡 → LeCun 的大藍圖 → 總結 → 自我檢測。
 - 每個內容頁 `<section data-wiki="concepts/jepa.md#錨點,...">`，頁尾 `<footer class="src">` 列出可點的 Wiki 頁（連到 GitHub）。
 - 簡報裡的數字必須出現在它引用的 Wiki 頁。
 - 數學只放一個式子（L2 距離）；VICReg 只講直覺。
-- `python3 scripts/check_slides.py` errors=0、語意檢查無 UNSUPPORTED、`scripts/check_browser.mjs` 無溢出，才算完成。
+- **先寫 `slides/outline.md`，跑 `python3 scripts/check_outline.py` 到 errors=0，才寫 HTML**（run-2 加入）。大綱每頁要有「但書」欄：引用的 Wiki 頁有「注意」段落時必填，或寫「無：理由」。
+- 簡報不能出現 Wiki 沒有的最高級說法（最大、最好…）；Wiki 標（AI 補充）的內容在簡報要放 `.ai-note` 框。
+- `python3 scripts/check_slides.py` errors=0、語意檢查無 UNSUPPORTED／MISLEADING、`node scripts/check_browser.mjs` 無溢出，才算完成。
 
 ## 6. 流程（loop / graph）
 見 `README.md` 的流程圖。每輪檢查輸出存到 `logs/run-N/`，修正動作記進 `wiki/log.md`。
+- 全部確定性檢查：`python3 -m unittest discover tests && python3 scripts/check_wiki.py && python3 scripts/check_outline.py && python3 scripts/check_slides.py && node scripts/check_browser.mjs`
+- 語意檢查：開一個**沒看過前文**的 subagent，只給它 `index.html` 和被引用的 Wiki 頁，不准讀 `raw/`、`slides/`、`logs/`。

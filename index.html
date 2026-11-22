@@ -131,6 +131,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <h2>人 20 小時學會開車，AI 呢？</h2>
   <div class="cols">
     <div>
+      <p class="muted small">LeCun 的出發點：</p>
       <h3>青少年</h3>
       <p>大約 20 小時就能學會開車。</p>
       <h3>自駕系統</h3>
@@ -182,22 +183,22 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 </section>
 
 <!-- 4 JEPA 三零件 -->
-<section data-wiki="concepts/jepa.md#三個零件,concepts/jepa.md#一句話,concepts/collapse.md#怎麼防">
+<section data-wiki="concepts/jepa.md#三個零件,concepts/jepa.md#一句話,concepts/collapse.md#怎麼防,sources/ijepa.md#方法">
   <h2>JEPA 的三個零件</h2>
   <div class="arch" aria-label="JEPA 架構圖">
     <div class="box in-x">x 看得到的部分</div><div class="arrow">→</div><div class="box">Context encoder</div><div class="arrow">→</div><div class="box pred">Predictor<br><span class="small muted">猜 y 的表示</span></div><div class="arrow">↘</div><div class="box loss">比較兩個表示<br>（L2 距離）</div>
-    <div class="box in-y">y 被遮住的部分</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">目標表示</div><div class="arrow">↗</div>
+    <div class="box in-y">y 要猜的區域</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">y 的表示<br><span class="small muted">遮的是輸出，不是輸入</span></div><div class="arrow">↗</div>
   </div>
   <p class="formula">loss = <sup>1</sup>⁄<sub>M</sub> Σ<sub>i</sub> ‖ ŝ<sub>y<sub>i</sub></sub> − s<sub>y<sub>i</sub></sub> ‖₂²</p>
   <p>白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。</p>
   <p class="muted small">EMA（指數移動平均）：target encoder 由 context encoder 緩慢更新而來，用來防止下一頁的 collapse。</p>
-  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md#三個零件">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md#怎麼防">Wiki › collapse</a></footer>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md#三個零件">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md#怎麼防">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#方法">Wiki › I-JEPA 論文</a></footer>
   <aside class="notes">整份簡報唯一的式子。強調：比較發生在右邊的「表示」，不是像素。</aside>
 </section>
 
 <!-- 5 collapse -->
 <section data-wiki="concepts/collapse.md#是什麼,concepts/collapse.md#怎麼防">
-  <h2>最大的陷阱：collapse（表示崩塌）</h2>
+  <h2>JEPA 的難點：collapse（表示崩塌）</h2>
   <div class="cols wide-left">
     <div>
       <p>如果目標只是「讓兩個表示接近」，模型可以偷懶：<strong>不管輸入是什麼，都輸出同一個常數向量。</strong></p>
@@ -218,8 +219,23 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <aside class="notes">問同學：如果你是模型、只被要求「兩個輸出要一樣」，最省力的做法是什麼？答案就是 collapse。</aside>
 </section>
 
+<!-- 6 VICReg（run-2 新增） -->
+<section data-wiki="sources/vicreg.md#三個項只講直覺,sources/vicreg.md#重點,sources/vicreg.md#注意">
+  <h2>防 collapse 的一種做法：VICReg 的三個項</h2>
+  <table class="plain">
+    <tr><th>項</th><th>要求</th><th>擋住什麼</th></tr>
+    <tr><td>Invariance（不變）</td><td>同一張圖的兩個視角，嵌入要接近</td><td>這是原本的目標，單獨用就會 collapse</td></tr>
+    <tr><td>Variance（變異）</td><td>同一批資料裡，不同樣本的嵌入必須不一樣</td><td>所有樣本變成同一個向量</td></tr>
+    <tr><td>Covariance（共變異）</td><td>嵌入的各個維度不要互相重複</td><td>資訊上的 collapse</td></tr>
+  </table>
+  <p style="margin-top:20px">實驗：拿掉 variance 項，表示<strong>立刻</strong>崩塌成同一個向量，covariance 項救不了。</p>
+  <p class="muted">VICReg 的主要賣點是<strong>可解釋、模組化</strong>，不是準確度大勝：ImageNet 上和 Barlow Twins 打平（表 1），而且不需要 SimCLR 那種負樣本。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vicreg.md#三個項只講直覺">Wiki › VICReg 論文</a></footer>
+  <aside class="notes">run-2 新增的頁。只講直覺，不放公式。和上一頁的 EMA 做法對照：VICReg 用明確的限制，EMA 為什麼有效則還不完全清楚。</aside>
+</section>
+
 <!-- 6 I-JEPA -->
-<section data-wiki="sources/ijepa.md#一句話,sources/ijepa.md#方法,concepts/masking-strategy.md#i-jepa-的-multi-block-masking">
+<section data-wiki="sources/ijepa.md#一句話,sources/ijepa.md#方法,sources/ijepa.md#注意jepa-不是全面勝出,concepts/masking-strategy.md#i-jepa-的-multi-block-masking">
   <h2>主要範例：I-JEPA（2023，圖片）</h2>
   <div class="cols wide-left">
     <div>
@@ -228,6 +244,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
         <li>target 要夠大（語意層級），context 要資訊夠多、分布夠廣</li>
         <li>不需要人工設計的資料增強</li>
       </ul>
+      <p class="muted small">但書：只在圖片上驗證；消融實驗多用 ViT-B/16 和 1% 標註。</p>
       <h3 style="margin-top:18px">遮法很重要（只用 1% 標註，表 6）</h3>
       <div class="bars">
         <div class="bar">multi-block<span class="rep" style="width:100%">54.2</span></div>
@@ -340,7 +357,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   </table>
   <h3 style="margin-top:22px">讀論文時要小心的說法</h3>
   <ul>
-    <li>V-JEPA 寫「drops by 12%」：從 80.6 掉到 68.2，是 <span class="caution">12 個百分點</span>，不是相對 12%</li>
+    <li>V-JEPA 寫「drops by 12%」：標註從每類約 287 張減到 29 張，從 80.6 掉到 68.2，是 <span class="caution">12 個百分點</span>，不是相對 12%</li>
     <li>Meta 部落格說其他方法要「兩到 10 倍 GPU 時數」，但<span class="caution">沒說跟誰比</span></li>
   </ul>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md">Wiki › I-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md">Wiki › V-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-ijepa-blog.md">Wiki › Meta I-JEPA 部落格</a></footer>
@@ -369,8 +386,8 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <h2>帶走四句話</h2>
   <ol class="lead">
     <li>JEPA 從 x 的表示預測 y 的<strong>表示</strong>，不預測像素。</li>
-    <li>在表示空間比較，可以忽略無法預測的細節。I-JEPA 的消融實驗裡，預測表示 66.9、預測像素 40.7。</li>
-    <li>最大難點是 collapse，靠 EMA target encoder、stop-gradient 或 VICReg 的正則化來防。</li>
+    <li>在抽象表示裡比較，可以忽略不重要的細節。I-JEPA 的消融實驗裡，預測表示 66.9、預測像素 40.7。</li>
+    <li>難點是 collapse，靠 EMA target encoder、stop-gradient 或 VICReg 的正則化來防。</li>
     <li>它不是全面勝出：微調、看外觀的任務、部分控制任務仍可能輸。</li>
   </ol>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md">Wiki › I-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md">Wiki › V-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything</a></footer>

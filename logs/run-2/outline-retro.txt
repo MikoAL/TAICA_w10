@@ -1,0 +1,9 @@
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row1 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row6 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row7 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row8 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row10 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row11 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row12 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+OUTLINE_CAVEAT_MISSING outline-run1-retro.md:row13 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+SUMMARY rows=15 errors=8 warnings=0

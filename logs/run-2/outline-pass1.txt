@@ -1,0 +1,3 @@
+OUTLINE_NUMBER_UNSUPPORTED outline.md:row1 number 13 not in any cited page
+OUTLINE_CAVEAT_MISSING outline.md:row3 cited page has a 注意 caveat; fill 但書 or waive with 無：reason
+SUMMARY rows=16 errors=2 warnings=0
