@@ -152,7 +152,7 @@ class TestCheckWiki(Fixture):
     def test_table_number_is_warning(self):
         self.write(f"""
         # A
-        像素 40.7、表示 66.9（表 7）。[^ijepa-1]
+        像素 16、表示 72（表 7）。[^ijepa-1]
 
         ## 引文
         [^ijepa-1]: [ijepa](../sources/ijepa.md) — "{GOOD_QUOTE}"
@@ -160,6 +160,41 @@ class TestCheckWiki(Fixture):
         issues = check(self.wiki, self.raw)
         self.assertEqual([i.code for i in issues if i.severity == "error"], [])
         self.assertIn("TABLE_NUMBER_UNVERIFIED", [i.code for i in issues if i.severity == "warning"])
+
+    def test_list_markers_and_math_blocks_ignored(self):
+        # run-1 false positives: "1." list numbering and $$...$$ formulas were checked as numbers/paragraphs
+        self.write(f"""
+        # A
+        1. 第一步。[^ijepa-1]
+        2. 第二步。[^ijepa-1]
+
+        $$\\frac{{1}}{{M}}\\sum_{{i=1}}^{{M}} x^2$$
+
+        ## 引文
+        [^ijepa-1]: [ijepa](../sources/ijepa.md) — "{GOOD_QUOTE}"
+        """)
+        self.assertEqual(self.codes(), [])
+
+    def test_ai_note_is_warning_not_error(self):
+        # run-1 finding: AI-added explanations must be visibly marked, then they are warnings, not errors
+        self.write("""
+        # A
+        （AI 補充）比喻：分給 3 個人各猜一項。
+        """)
+        issues = check(self.wiki, self.raw)
+        self.assertEqual([i.code for i in issues if i.severity == "error"], [])
+        self.assertIn("AI_NOTE", [i.code for i in issues if i.severity == "warning"])
+
+    def test_table_number_absent_from_source_is_error(self):
+        # 99.9 appears nowhere in raw/ijepa -> cannot be a real table value
+        self.write(f"""
+        # A
+        某方法 99.9、另一個 72（表 3）。[^ijepa-1]
+
+        ## 引文
+        [^ijepa-1]: [ijepa](../sources/ijepa.md) — "{GOOD_QUOTE}"
+        """)
+        self.assertEqual(self.codes(), ["TABLE_NUMBER_NOT_IN_SOURCE"])
 
     def test_missing_frontmatter_and_footnote(self):
         (self.wiki / "concepts" / "a.md").write_text("# A\n句子。[^ijepa-9]\n", encoding="utf-8")

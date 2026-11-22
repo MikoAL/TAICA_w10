@@ -21,6 +21,7 @@ LIST_ITEM = re.compile(r"^(?:[-*]|\d+\.)\s")
 TABLE_SEP = re.compile(r"^\s*\|[\s|:-]*---")
 TABLE_MARK = re.compile(r"[（(]表\s*\d+[）)]")
 NUMBER = re.compile(r"(?<![A-Za-z0-9.\-/])\d+(?:\.\d+)?(?![A-Za-z0-9])")
+AI_NOTE = re.compile(r"^（AI 補充）")
 YEAR = re.compile(r"(19|20)\d\d")
 
 
@@ -34,12 +35,17 @@ class Issue:
 
 
 def _fence_mask(lines):
-    """True for every line inside a code fence, including the fence lines themselves."""
+    """True for every line inside a code fence or $$ math block, including the delimiter lines."""
     mask, inside = [], False
     for line in lines:
-        if line.lstrip().startswith("```"):
+        st = line.strip()
+        if st.startswith("```"):
             inside = not inside
             mask.append(True)
+        elif not inside and st.startswith("$$"):  # display math: one-line $$...$$ or opening/closing $$
+            mask.append(True)
+            if not (len(st) > 2 and st.endswith("$$")):
+                inside = not inside
         else:
             mask.append(inside)
     return mask
@@ -140,21 +146,31 @@ def _blocks(lines, mask, start):
     return blocks
 
 
-def _check_block(block, defs, rel, out):
+def _check_block(block, defs, rel, out, sources=None):
     """Check one block for citation presence and for numbers that appear in its cited quotes."""
     text = "\n".join(t for _, t in block)
+    if AI_NOTE.match(LIST_ITEM.sub("", block[0][1].strip(), count=1)):
+        out.append(Issue("AI_NOTE", "warning", rel, block[0][0], "AI-added explanation (no source)"))
+        return
     if "[^" not in text:
         out.append(Issue("UNCITED_PARAGRAPH", "error", rel, block[0][0], "block has no [^...] citation"))
     quotes = [defs[f] for f in FOOTREF.findall(text) if defs.get(f)]
     table = TABLE_MARK.search(text) is not None
     for no, line in block:
         body = re.sub(r"\]\([^)]*\)", "]", re.sub(r"\[\^[^\]]*\]", "", line))
+        body = LIST_ITEM.sub("", body.lstrip(), count=1)
         body = TABLE_MARK.sub("", body)
         for m in NUMBER.finditer(body):
             n = m.group()
             if YEAR.fullmatch(n) or any(re.search(rf"(?<![\d.]){re.escape(n)}(?!\d)", q) for q in quotes):
                 continue
             if table:
+                cited = {f.rpartition("-")[0] for f in FOOTREF.findall(text)}
+                if not any(re.search(rf"(?<![\d.]){re.escape(n)}(?!\d)", (sources or {}).get(sid, ""))
+                           for sid in cited):
+                    out.append(Issue("TABLE_NUMBER_NOT_IN_SOURCE", "error", rel, no,
+                                     f"table number {n} appears nowhere in the cited source text"))
+                    continue
                 out.append(Issue("TABLE_NUMBER_UNVERIFIED", "warning", rel, no,
                                  f"number {n} not in cited quote (table reference, verify manually)"))
             else:
@@ -188,7 +204,7 @@ def _check_page(path, rel, raw_dir, sources, out):
                 out.append(Issue("MISSING_FOOTNOTE", "error", rel, i + 1, f"no definition for [^{fid}]"))
 
     for block in _blocks(lines, mask, start):
-        _check_block(block, defs, rel, out)
+        _check_block(block, defs, rel, out, sources)
 
     for no, target in _links(lines, mask):
         if not (path.parent / target).exists():

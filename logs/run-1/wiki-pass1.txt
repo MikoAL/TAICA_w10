@@ -1,0 +1,54 @@
+NUMBER_NOT_IN_QUOTE wiki/concepts/collapse.md:9 number 0 not in any cited quote
+UNCITED_PARAGRAPH wiki/concepts/frozen-evaluation.md:8 block has no [^...] citation
+QUOTE_NOT_FOUND wiki/concepts/frozen-evaluation.md:30 quote not found in raw/ijepa/paper.txt
+QUOTE_NOT_FOUND wiki/concepts/frozen-evaluation.md:32 quote not found in raw/ijepa/paper.txt
+UNCITED_PARAGRAPH wiki/concepts/jepa.md:18 block has no [^...] citation
+NUMBER_NOT_IN_QUOTE wiki/concepts/jepa.md:18 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/jepa.md:18 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/jepa.md:18 number 2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/jepa.md:18 number 2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/jepa.md:34 number 0 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/masking-strategy.md:14 number 6 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/masking-strategy.md:14 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/masking-strategy.md:14 number 54.2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/masking-strategy.md:14 number 17.6 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/orthogonal-predictive-factorization.md:14 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/orthogonal-predictive-factorization.md:15 number 2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/orthogonal-predictive-factorization.md:16 number 3 not in any cited quote
+UNCITED_PARAGRAPH wiki/concepts/orthogonal-predictive-factorization.md:18 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/concepts/pixel-vs-feature-prediction.md:9 block has no [^...] citation
+TABLE_NUMBER_UNVERIFIED wiki/concepts/pixel-vs-feature-prediction.md:18 number 66.9 not in cited quote (table reference, verify manually)
+TABLE_NUMBER_UNVERIFIED wiki/concepts/pixel-vs-feature-prediction.md:18 number 40.7 not in cited quote (table reference, verify manually)
+NUMBER_NOT_IN_QUOTE wiki/concepts/pixel-vs-feature-prediction.md:23 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/pixel-vs-feature-prediction.md:23 number 85.4 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/concepts/pixel-vs-feature-prediction.md:23 number 85.6 not in any cited quote
+UNCITED_PARAGRAPH wiki/concepts/self-supervised-learning.md:11 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/ijepa.md:9 block has no [^...] citation
+TABLE_NUMBER_UNVERIFIED wiki/sources/ijepa.md:24 number 40.7 not in cited quote (table reference, verify manually)
+TABLE_NUMBER_UNVERIFIED wiki/sources/ijepa.md:24 number 66.9 not in cited quote (table reference, verify manually)
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:25 number 16 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:27 number 6 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:27 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:27 number 54.2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:27 number 15.5 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:27 number 20.2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:30 number 87.8 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/ijepa.md:32 number 1 not in any cited quote
+QUOTE_NOT_FOUND wiki/sources/ijepa.md:46 quote not found in raw/ijepa/paper.txt
+UNCITED_PARAGRAPH wiki/sources/jepa-anything.md:9 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/jepa-anything.md:10 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/meta-ijepa-blog.md:9 block has no [^...] citation
+NUMBER_NOT_IN_QUOTE wiki/sources/meta-ijepa-blog.md:25 number 2 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/meta-ijepa-blog.md:26 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/meta-ijepa-blog.md:26 number 13 not in any cited quote
+UNCITED_PARAGRAPH wiki/sources/meta-lecun-blog.md:9 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/meta-lecun-blog.md:25 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/vicreg.md:8 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/vicreg.md:9 block has no [^...] citation
+UNCITED_PARAGRAPH wiki/sources/vjepa.md:9 block has no [^...] citation
+NUMBER_NOT_IN_QUOTE wiki/sources/vjepa.md:23 number 200 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/vjepa.md:30 number 80.6 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/vjepa.md:32 number 1 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/vjepa.md:32 number 85.4 not in any cited quote
+NUMBER_NOT_IN_QUOTE wiki/sources/vjepa.md:32 number 85.6 not in any cited quote
+SUMMARY errors=49 warnings=4
