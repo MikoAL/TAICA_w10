@@ -1,0 +1,16 @@
+OK slide1 "JEPA 不預測像素， 預測意義" content bottom 644px <= 714px
+OK slide2 "人 20 小時學會開車，AI 呢？" content bottom 402px <= 654px
+OK slide3 "不用標註也能學：自監督學習" content bottom 406px <= 654px
+OK slide4 "三種「猜」法" content bottom 476px <= 654px
+OK slide5 "JEPA 的三個零件" content bottom 478px <= 654px
+OK slide6 "最大的陷阱：collapse（表示崩塌）" content bottom 452px <= 654px
+OK slide7 "主要範例：I-JEPA（2023，圖片）" content bottom 628px <= 654px
+OK slide8 "預測表示真的比較好？" content bottom 480px <= 654px
+OK slide9 "從圖片到影片：V-JEPA（2024）" content bottom 360px <= 654px
+OK slide10 "怎麼看這些數字" content bottom 436px <= 654px
+OK slide11 "最新進展：JEPA-Anything（2026）" content bottom 554px <= 654px
+OK slide12 "JEPA 輸在哪裡" content bottom 480px <= 654px
+OK slide13 "回到大藍圖：LeCun 的六個模組" content bottom 415px <= 654px
+OK slide14 "帶走四句話" content bottom 417px <= 654px
+OK slide15 "自我檢測" content bottom 399px <= 654px
+SUMMARY slides=15 errors=0

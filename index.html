@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JEPA 教學簡報</title>
+<meta name="description" content="用 JEPA LLM Wiki 製作的教學簡報：JEPA 不預測像素，預測意義。">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f3f5f7;
+  --ink: #17212b;
+  --muted: #5e6b78;
+  --line: #c9d1d9;
+  --context: #2e7d7a;
+  --context-soft: #d5ebe9;
+  --target: #d99a2b;
+  --target-soft: #f6e6c6;
+  --caution: #a8433a;
+}
+html, body, .reveal-viewport { background: var(--paper); }
+.reveal { font-family: "Noto Sans TC", system-ui, sans-serif; font-size: 25px; color: var(--ink); line-height: 1.55; }
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 44px 64px 0; box-sizing: border-box; height: 720px; }
+.reveal h1, .reveal h2 { font-family: "Noto Serif TC", serif; color: var(--ink); margin: 0 0 22px; line-height: 1.25; text-transform: none; }
+.reveal h1 { font-size: 64px; font-weight: 900; }
+.reveal h2 { font-size: 40px; font-weight: 900; }
+.reveal h3 { font-size: 26px; font-weight: 700; margin: 0 0 8px; color: var(--ink); }
+.reveal p { margin: 0 0 14px; }
+.reveal ul, .reveal ol { margin: 0 0 14px 1.3em; padding: 0; }
+.reveal li { margin: 0 0 8px; }
+.reveal strong { font-weight: 700; }
+.reveal .lead { font-size: 29px; max-width: 30em; }
+.reveal .muted { color: var(--muted); }
+.reveal .small { font-size: 21px; }
+.reveal .en { color: var(--muted); font-size: 0.85em; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.cols.wide-left { grid-template-columns: 1.35fr 1fr; }
+
+/* source footer: every content slide links back to the wiki pages it was written from */
+.reveal footer.src { position: absolute; left: 64px; right: 64px; bottom: 26px; font-size: 16px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+.reveal footer.src a { color: var(--context); text-decoration: none; margin-right: 14px; }
+.reveal footer.src a:hover, .reveal footer.src a:focus-visible { text-decoration: underline; }
+
+/* AI-added explanation, mirrors the （AI 補充） rule in the wiki */
+.ai-note { border-left: 4px dashed var(--muted); padding: 4px 0 4px 14px; color: var(--muted); }
+.ai-note::before { content: "AI 補充"; display: block; font-size: 15px; font-weight: 700; color: var(--muted); }
+
+.caution { color: var(--caution); font-weight: 700; }
+
+table.plain { border-collapse: collapse; width: 100%; font-size: 22px; }
+table.plain th, table.plain td { border-bottom: 1px solid var(--line); padding: 9px 12px 9px 0; text-align: left; vertical-align: top; }
+table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
+
+/* the patch grid: the one recurring visual, taken from how I-JEPA masks an image */
+.patches { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; aspect-ratio: 1; }
+.patches i { background: #dfe4e9; border-radius: 2px; }
+.patches i.c { background: var(--context); }
+.patches i.t { background: var(--target); }
+.legend { font-size: 18px; color: var(--muted); margin-top: 12px; }
+.legend b { display: inline-block; width: 14px; height: 14px; vertical-align: -1px; margin-right: 6px; border-radius: 2px; }
+
+/* title slide */
+.title-slide { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: center; height: 600px; }
+.title-slide h1 span { display: block; }
+.title-slide .sub { font-size: 24px; color: var(--muted); margin-top: 18px; }
+
+/* JEPA architecture diagram */
+.arch { display: grid; grid-template-columns: auto 24px auto 24px auto 24px auto; grid-template-rows: auto auto; gap: 14px 6px; align-items: center; font-size: 20px; margin: 6px 0 20px; }
+.arch .arrow { text-align: center; }
+.arch .rep { font-family: "Noto Serif TC", serif; font-size: 24px; text-align: center; }
+.arch .pred { border-color: var(--context); }
+.arch .box { border: 2px solid var(--ink); border-radius: 6px; padding: 8px 12px; text-align: center; background: #fff; }
+.arch .in-x { border-color: var(--context); background: var(--context-soft); }
+.arch .in-y { border-color: var(--target); background: var(--target-soft); }
+.arch .arrow { color: var(--muted); }
+.arch .loss { grid-column: 7; grid-row: 1 / span 2; border-style: dashed; }
+.formula { font-family: "Noto Serif TC", serif; font-size: 30px; margin: 4px 0 8px; }
+
+/* bar comparison */
+.bars { display: grid; gap: 10px; margin: 8px 0 14px; }
+.bar { display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 12px; font-size: 20px; }
+.bar span { display: block; height: 30px; border-radius: 3px; color: #fff; font-weight: 700; padding-left: 10px; line-height: 30px; box-sizing: border-box; }
+.bar .rep { background: var(--context); }
+.bar .pix { background: #8e9aa6; }
+
+/* factor split for JEPA-Anything */
+.split { display: flex; gap: 6px; margin: 10px 0 6px; height: 34px; }
+.split div { flex: 1; border-radius: 3px; }
+.whole { height: 34px; border-radius: 3px; background: linear-gradient(90deg, var(--context), var(--target)); }
+
+/* six modules */
+.modules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 20px; }
+.modules div { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; background: #fff; }
+.modules div.core { border: 2px solid var(--context); background: var(--context-soft); }
+.modules b { display: block; font-size: 21px; }
+
+.quiz li { margin-bottom: 18px; }
+.quiz .answer { display: block; color: var(--context); font-weight: 500; margin-top: 4px; }
+
+.reveal .progress { color: var(--context); }
+.reveal .slide-number { background: transparent; color: var(--muted); font-size: 15px; }
+.reveal a:focus-visible { outline: 3px solid var(--target); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .reveal .slides section { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- 0 封面 -->
+<section data-kind="title">
+  <div class="title-slide">
+    <div>
+      <h1><span>JEPA</span><span>不預測像素，</span><span>預測意義</span></h1>
+      <p class="sub">給沒學過自監督學習的同學：<br>AI 怎麼不靠標註，學會「世界怎麼運作」</p>
+      <p class="small muted">內容全部來自本專案的 LLM Wiki，每頁底下都有來源連結。</p>
+    </div>
+    <div>
+      <div class="patches" aria-label="I-JEPA 遮罩示意：青綠色是看得到的區塊，琥珀色是要預測的區塊" id="cover-grid"></div>
+      <p class="legend"><b style="background:var(--context)"></b>看得到（context）　<b style="background:var(--target)"></b>要猜（target）　<b style="background:#dfe4e9"></b>沒用到</p>
+    </div>
+  </div>
+  <aside class="notes">開場：先讓大家看右邊這張格子圖，它就是整份簡報的主角。JEPA 從青綠色猜琥珀色，但猜的不是顏色像素，而是「意義」。</aside>
+</section>
+
+<!-- 1 動機 -->
+<section data-wiki="concepts/world-model.md#為什麼需要,concepts/world-model.md#是什麼">
+  <h2>人 20 小時學會開車，AI 呢？</h2>
+  <div class="cols">
+    <div>
+      <h3>青少年</h3>
+      <p>大約 20 小時就能學會開車。</p>
+      <h3>自駕系統</h3>
+      <p>需要上百萬、上十億筆標註資料，還要在虛擬環境試上百萬次。</p>
+    </div>
+    <div>
+      <h3>LeCun 的答案：world model</h3>
+      <p>機器內部對「世界怎麼運作」的模型。有了它，機器可以：</p>
+      <ul>
+        <li>補上感官沒提供的資訊</li>
+        <li>預測接下來合理的狀態</li>
+      </ul>
+      <p class="muted small">人類靠觀察累積大量背景知識，也就是常識。</p>
+    </div>
+  </div>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#為什麼需要">Wiki › world model</a></footer>
+  <aside class="notes">重點是「效率差距」。這頁不講技術，只建立問題：怎麼讓機器像人一樣，從觀察學到世界的規則？</aside>
+</section>
+
+<!-- 2 自監督 -->
+<section data-wiki="concepts/self-supervised-learning.md#是什麼,concepts/self-supervised-learning.md#用能量來想">
+  <h2>不用標註也能學：自監督學習</h2>
+  <p class="lead">Self-supervised learning：系統自己學習<strong>輸入之間的關係</strong>，直接從沒有標註的圖片、聲音學，不靠人工整理的標註資料集。</p>
+  <div class="cols">
+    <div class="ai-note">把資料的一部分藏起來，讓模型從剩下的部分去猜。不需要人告訴它答案，因為答案就在資料裡。</div>
+    <div>
+      <h3>用「能量」來想</h3>
+      <p>相容的輸入 → 低能量<br>不相容的輸入 → 高能量</p>
+      <p class="muted small">I-JEPA 論文用這個角度統一各種自監督方法。</p>
+    </div>
+  </div>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/self-supervised-learning.md">Wiki › self-supervised learning</a></footer>
+  <aside class="notes">「AI 補充」框是 Wiki 裡標示為 AI 自己加的直覺說明，不是來源原文。</aside>
+</section>
+
+<!-- 3 三大流派 -->
+<section data-wiki="concepts/generative-vs-joint-embedding.md#自監督的三大流派生成式聯合嵌入jepa,concepts/generative-vs-joint-embedding.md#生成式的問題,concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/pixel-vs-feature-prediction.md#生成式預測像素">
+  <h2>三種「猜」法</h2>
+  <table class="plain">
+    <tr><th>流派</th><th>做法</th><th>在哪裡比較</th><th>代表</th></tr>
+    <tr><td>聯合嵌入 <span class="en">Joint-Embedding</span></td><td>相容的輸入給相似的嵌入</td><td>嵌入</td><td>VICReg</td></tr>
+    <tr><td>生成式 <span class="en">Generative</span></td><td>用 decoder 直接<strong>重建</strong> y</td><td>像素</td><td>MAE</td></tr>
+    <tr><td><strong>JEPA</strong></td><td>用 predictor 預測 y 的<strong>嵌入</strong></td><td>嵌入</td><td>I-JEPA、V-JEPA</td></tr>
+  </table>
+  <p style="margin-top:22px"><strong>生成式的問題：</strong>它想補完每一個缺少的細節，但世界本來就無法完全預測。Meta 舉的例子：生成式模型很難把人手畫對。</p>
+  <p><strong>JEPA 的位置：</strong>像生成式一樣「從一部分預測另一部分」，但像聯合嵌入一樣在嵌入空間比較。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md#生成式預測像素">Wiki › 像素 vs 表示</a></footer>
+  <aside class="notes">這頁是定位圖。記住一句：JEPA = 生成式的「預測」+ 聯合嵌入的「在嵌入空間比」。</aside>
+</section>
+
+<!-- 4 JEPA 三零件 -->
+<section data-wiki="concepts/jepa.md#三個零件,concepts/jepa.md#一句話,concepts/collapse.md#怎麼防">
+  <h2>JEPA 的三個零件</h2>
+  <div class="arch" aria-label="JEPA 架構圖">
+    <div class="box in-x">x 看得到的部分</div><div class="arrow">→</div><div class="box">Context encoder</div><div class="arrow">→</div><div class="box pred">Predictor<br><span class="small muted">猜 y 的表示</span></div><div class="arrow">↘</div><div class="box loss">比較兩個表示<br>（L2 距離）</div>
+    <div class="box in-y">y 被遮住的部分</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">目標表示</div><div class="arrow">↗</div>
+  </div>
+  <p class="formula">loss = <sup>1</sup>⁄<sub>M</sub> Σ<sub>i</sub> ‖ ŝ<sub>y<sub>i</sub></sub> − s<sub>y<sub>i</sub></sub> ‖₂²</p>
+  <p>白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。</p>
+  <p class="muted small">EMA（指數移動平均）：target encoder 由 context encoder 緩慢更新而來，用來防止下一頁的 collapse。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md#三個零件">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md#怎麼防">Wiki › collapse</a></footer>
+  <aside class="notes">整份簡報唯一的式子。強調：比較發生在右邊的「表示」，不是像素。</aside>
+</section>
+
+<!-- 5 collapse -->
+<section data-wiki="concepts/collapse.md#是什麼,concepts/collapse.md#怎麼防">
+  <h2>最大的陷阱：collapse（表示崩塌）</h2>
+  <div class="cols wide-left">
+    <div>
+      <p>如果目標只是「讓兩個表示接近」，模型可以偷懶：<strong>不管輸入是什麼，都輸出同一個常數向量。</strong></p>
+      <div class="ai-note">這樣兩個表示永遠一模一樣，loss 永遠是零，模型什麼都沒學到。</div>
+      <p class="muted small" style="margin-top:12px">用能量的說法：能量地形變得完全平坦。</p>
+    </div>
+    <div>
+      <table class="plain">
+        <tr><th>防法</th><th>誰用</th></tr>
+        <tr><td>Contrastive：把不同樣本推開</td><td>SimCLR</td></tr>
+        <tr><td>EMA target encoder + stop-gradient</td><td>I-JEPA、V-JEPA</td></tr>
+        <tr><td>Variance + Covariance 正則化</td><td>VICReg</td></tr>
+      </table>
+    </div>
+  </div>
+  <p>VICReg 的實驗：拿掉 variance 項，表示<strong>立刻</strong>崩塌。EMA 這類技巧為什麼有效，VICReg 論文說還不完全清楚。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a></footer>
+  <aside class="notes">問同學：如果你是模型、只被要求「兩個輸出要一樣」，最省力的做法是什麼？答案就是 collapse。</aside>
+</section>
+
+<!-- 6 I-JEPA -->
+<section data-wiki="sources/ijepa.md#一句話,sources/ijepa.md#方法,concepts/masking-strategy.md#i-jepa-的-multi-block-masking">
+  <h2>主要範例：I-JEPA（2023，圖片）</h2>
+  <div class="cols wide-left">
+    <div>
+      <ul>
+        <li>從<strong>一塊</strong>看得到的 context 區塊，預測<strong>幾塊</strong>被遮住的 target 區塊的表示</li>
+        <li>target 要夠大（語意層級），context 要資訊夠多、分布夠廣</li>
+        <li>不需要人工設計的資料增強</li>
+      </ul>
+      <h3 style="margin-top:18px">遮法很重要（只用 1% 標註，表 6）</h3>
+      <div class="bars">
+        <div class="bar">multi-block<span class="rep" style="width:100%">54.2</span></div>
+        <div class="bar">random<span class="pix" style="width:32%">17.6</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="patches" id="ijepa-grid" aria-label="multi-block 遮罩示意"></div>
+      <p class="legend"><b style="background:var(--context)"></b>context　<b style="background:var(--target)"></b>targets　<b style="background:#dfe4e9"></b>沒用到</p>
+    </div>
+  </div>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#方法">Wiki › I-JEPA 論文</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/masking-strategy.md">Wiki › masking strategy</a></footer>
+  <aside class="notes">右邊格子：一大塊青綠色 context，幾塊琥珀色 target。target 的表示來自 target encoder 的輸出，不是遮住輸入。</aside>
+</section>
+
+<!-- 7 證據 -->
+<section data-wiki="concepts/pixel-vs-feature-prediction.md#證據,concepts/pixel-vs-feature-prediction.md#注意,sources/ijepa.md#結果">
+  <h2>預測表示真的比較好？</h2>
+  <h3>I-JEPA 表 7：只用 1% 標註做線性評估</h3>
+  <div class="bars">
+    <div class="bar">預測表示<span class="rep" style="width:100%">66.9（訓練 500 epoch）</span></div>
+    <div class="bar">預測像素<span class="pix" style="width:61%">40.7（800 epoch）</span></div>
+  </div>
+  <p>像素版本<strong>訓練得更久</strong>，分數仍然低很多。</p>
+  <ul>
+    <li><strong>V-JEPA</strong>：在特徵空間預測，比在像素空間預測有一致的進步。</li>
+    <li><strong>效率</strong>：ViT-Huge 用 16 張 A100、不到 72 小時；比 MAE 少約 5 倍的迭代就收斂。</li>
+  </ul>
+  <p class="muted"><strong>但書：</strong>表 7 只是一組消融實驗；V-JEPA 完整微調時，兩者差距很小（85.4 vs 85.6），優勢主要在凍結評估。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md#證據">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#結果">Wiki › I-JEPA 論文</a></footer>
+  <aside class="notes">這頁的 epoch 數是 Wiki 人工核對表格時修正過的：原本寫「同樣設定」，其實是 500 vs 800。</aside>
+</section>
+
+<!-- 8 V-JEPA -->
+<section data-wiki="sources/vjepa.md#一句話,sources/vjepa.md#結果">
+  <h2>從圖片到影片：V-JEPA（2024）</h2>
+  <p class="lead">只用「特徵預測」訓練：不重建像素、不用文字、不用負樣本。</p>
+  <div class="cols">
+    <div>
+      <ul>
+        <li>訓練資料：約 2 million 支公開影片</li>
+        <li>最大模型 ViT-H/16（只看影片）：Kinetics-400 81.9%、SSv2 72.2%</li>
+        <li>需要理解<strong>動作</strong>的任務特別強：SSv2 +21 分</li>
+      </ul>
+    </div>
+    <div>
+      <ul>
+        <li>預訓練看的樣本明顯比較少</li>
+        <li>標註變少時，掉得比其他模型少（label-efficient）</li>
+      </ul>
+    </div>
+  </div>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md#結果">Wiki › V-JEPA 論文</a></footer>
+  <aside class="notes">Kinetics-400 靠看物體就能答，SSv2 要看動作順序，所以 V-JEPA 在 SSv2 的進步更有意義。</aside>
+</section>
+
+<!-- 9 怎麼看數字 -->
+<section data-wiki="concepts/frozen-evaluation.md#linear-probe線性探測,concepts/frozen-evaluation.md#frozen-evaluation凍結評估,concepts/frozen-evaluation.md#fine-tuning微調,concepts/frozen-evaluation.md#low-shot低樣本,concepts/frozen-evaluation.md#為什麼要分清楚">
+  <h2>怎麼看這些數字</h2>
+  <table class="plain">
+    <tr><th>評估方式</th><th>做法</th></tr>
+    <tr><td>Linear probe</td><td>凍結 encoder，只在上面訓練一個線性模型</td></tr>
+    <tr><td>凍結評估</td><td>不調整模型參數，只訓練小的分類頭（V-JEPA 用 attentive probe）</td></tr>
+    <tr><td>微調 fine-tuning</td><td>整個模型用標註資料再訓練</td></tr>
+    <tr><td>低樣本 low-shot</td><td>只用 1% 的 ImageNet 標註，大約每類 12 或 13 張圖</td></tr>
+  </table>
+  <p style="margin-top:20px">JEPA 的優勢主要出現在<strong>凍結評估</strong>和<strong>低樣本</strong>；完整微調時優勢變小。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
+  <aside class="notes">看到論文數字先問：這是哪一種評估？下一頁會看到，換一種評估，JEPA 就不一定贏。</aside>
+</section>
+
+<!-- 10 JEPA-Anything -->
+<section data-wiki="concepts/orthogonal-predictive-factorization.md#核心想法概念版,sources/jepa-anything.md#問題,sources/jepa-anything.md#論文報告的結果,sources/jepa-anything.md#注意">
+  <h2>最新進展：JEPA-Anything（2026）</h2>
+  <p class="muted small">v1 預印本，尚未經過同儕審查。以下結果都是「論文報告」。</p>
+  <div class="cols">
+    <div>
+      <h3>問題</h3>
+      <p>標準 JEPA 只有一個目標、一個 predictor。論文認為這樣容易預測的結構會主導訓練。</p>
+      <h3>想法：正交預測分解</h3>
+      <ol>
+        <li><strong>拆</strong>：把目標狀態拆成幾個因子</li>
+        <li><strong>分頭預測</strong>：每個因子有專屬分支</li>
+        <li><strong>正交</strong>：因子互不重疊，能穩定組回完整狀態</li>
+      </ol>
+    </div>
+    <div>
+      <div class="whole" aria-hidden="true"></div>
+      <div class="split" aria-hidden="true"><div style="background:var(--context)"></div><div style="background:#6f9e8c"></div><div style="background:#b9a052"></div><div style="background:var(--target)"></div></div>
+      <p class="legend">一個目標 → 拆成互相正交的因子</p>
+      <h3 style="margin-top:16px">論文報告</h3>
+      <ul>
+        <li>測試七個領域：影像、生物、臨床、控制、分子、物理場、天氣</li>
+        <li>和條件相同的標準 JEPA 比：Interventional Pong 單一介入誤差降低 34.8%，但同時介入多個變數時只降低 12.90%</li>
+      </ul>
+    </div>
+  </div>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/orthogonal-predictive-factorization.md">Wiki › 正交預測分解</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything 論文</a></footer>
+  <aside class="notes">只講概念，不講 pseudoinverse。重點是「拆開分頭預測」這個直覺。</aside>
+</section>
+
+<!-- 11 JEPA 輸在哪裡 -->
+<section data-wiki="sources/ijepa.md#注意jepa-不是全面勝出,sources/vjepa.md#注意,sources/jepa-anything.md#注意,sources/meta-ijepa-blog.md#注意">
+  <h2>JEPA 輸在哪裡</h2>
+  <table class="plain">
+    <tr><th>情境</th><th>結果</th></tr>
+    <tr><td>I-JEPA 完整微調</td><td>I-JEPA 87.1 vs MAE 87.8，略輸（但訓練 epoch 少 5.3 倍）</td></tr>
+    <tr><td>V-JEPA 做 ImageNet（看外觀即可）</td><td>V-JEPA 74.8% vs OmniMAE 75.1%</td></tr>
+    <tr><td>JEPA-Anything 的 Hopper 規劃</td><td>標準 JEPA 比較好，論文自己說「看環境而定」</td></tr>
+  </table>
+  <h3 style="margin-top:22px">讀論文時要小心的說法</h3>
+  <ul>
+    <li>V-JEPA 寫「drops by 12%」：從 80.6 掉到 68.2，是 <span class="caution">12 個百分點</span>，不是相對 12%</li>
+    <li>Meta 部落格說其他方法要「兩到 10 倍 GPU 時數」，但<span class="caution">沒說跟誰比</span></li>
+  </ul>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md">Wiki › I-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md">Wiki › V-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-ijepa-blog.md">Wiki › Meta I-JEPA 部落格</a></footer>
+  <aside class="notes">這頁讓大家知道：同一個方法，換評估方式或換任務，結論就會變。</aside>
+</section>
+
+<!-- 12 LeCun 大藍圖 -->
+<section data-wiki="concepts/world-model.md#lecun-的六模組架構一頁帶過,concepts/world-model.md#注意,concepts/world-model.md#和-jepa-的關係">
+  <h2>回到大藍圖：LeCun 的六個模組</h2>
+  <div class="modules">
+    <div><b>Configurator</b>總指揮，依任務設定其他模組</div>
+    <div><b>Perception</b>從感測器估計目前狀態</div>
+    <div class="core"><b>World model</b>補資訊、預測未來；核心就是 JEPA</div>
+    <div><b>Cost</b>算出「不舒服程度」</div>
+    <div><b>Actor</b>找讓未來成本最低的行動</div>
+    <div><b>Short-term memory</b>記住狀態和成本</div>
+  </div>
+  <p style="margin-top:22px">Meta 把 I-JEPA 的 predictor 稱為一個「原始、受限的 world model」。</p>
+  <p class="muted">這仍是研究方向：Meta 自己說，訓練 world model 是未來幾十年 AI 的主要挑戰。</p>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#lecun-的六模組架構一頁帶過">Wiki › world model</a></footer>
+  <aside class="notes">一頁帶過六個模組，重點是中間那格：JEPA 是 world model 的候選做法。</aside>
+</section>
+
+<!-- 13 總結 -->
+<section data-wiki="concepts/jepa.md#一句話,concepts/jepa.md#為什麼不預測像素,concepts/pixel-vs-feature-prediction.md#證據,concepts/collapse.md#怎麼防,sources/ijepa.md#注意jepa-不是全面勝出,sources/vjepa.md#注意,sources/jepa-anything.md#注意">
+  <h2>帶走四句話</h2>
+  <ol class="lead">
+    <li>JEPA 從 x 的表示預測 y 的<strong>表示</strong>，不預測像素。</li>
+    <li>在表示空間比較，可以忽略無法預測的細節。I-JEPA 的消融實驗裡，預測表示 66.9、預測像素 40.7。</li>
+    <li>最大難點是 collapse，靠 EMA target encoder、stop-gradient 或 VICReg 的正則化來防。</li>
+    <li>它不是全面勝出：微調、看外觀的任務、部分控制任務仍可能輸。</li>
+  </ol>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md">Wiki › I-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md">Wiki › V-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything</a></footer>
+</section>
+
+<!-- 14 自我檢測 -->
+<section data-wiki="concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/collapse.md#怎麼防,concepts/frozen-evaluation.md#為什麼要分清楚">
+  <h2>自我檢測</h2>
+  <ol class="quiz">
+    <li>JEPA 和 MAE 這類生成式方法，loss 算在哪裡不一樣？
+      <span class="answer fragment">JEPA 算在嵌入空間，MAE 算在像素（輸入）空間。</span></li>
+    <li>如果 encoder 不管輸入都輸出同一個向量，會發生什麼事？I-JEPA 用什麼防止？
+      <span class="answer fragment">Collapse。I-JEPA、V-JEPA 用 EMA target encoder 加 stop-gradient 來防止。</span></li>
+    <li>有人說「JEPA 比 MAE 好」，你應該先問什麼？
+      <span class="answer fragment">用哪一種評估？JEPA 的優勢主要在凍結評估和低樣本，完整微調時 I-JEPA 甚至略輸 MAE。</span></li>
+  </ol>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
+  <aside class="notes">按方向鍵逐一顯示答案。</aside>
+</section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+// Draw the patch grids: 10x10 patches; one large context block and several target blocks.
+function drawGrid(id, context, targets) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const inRect = (r, c, [r0, c0, h, w]) => r >= r0 && r < r0 + h && c >= c0 && c < c0 + w;
+  for (let r = 0; r < 10; r++) for (let c = 0; c < 10; c++) {
+    const i = document.createElement('i');
+    if (targets.some(t => inRect(r, c, t))) i.className = 't';
+    else if (inRect(r, c, context)) i.className = 'c';
+    el.appendChild(i);
+  }
+}
+const ctx = [0, 0, 10, 9];
+const tgts = [[1, 1, 3, 3], [1, 6, 2, 3], [5, 2, 3, 2], [6, 5, 2, 4]];
+drawGrid('cover-grid', ctx, tgts);
+drawGrid('ijepa-grid', ctx, tgts);
+
+Reveal.initialize({
+  hash: true,
+  width: 1280,
+  height: 720,
+  margin: 0.04,
+  center: false,
+  slideNumber: 'c/t',
+  progress: true,
+  transition: 'fade',
+  plugins: [RevealNotes]
+});
+</script>
+</body>
+</html>
