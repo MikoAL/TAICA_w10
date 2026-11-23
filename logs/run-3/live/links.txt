@@ -1,0 +1,27 @@
+## 2026-11-23 17:45:13
+200 https://github.com/MikoAL/TAICA_w10/blob/main/CLAUDE.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-1/SUMMARY.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-2/SUMMARY.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-3/independent-review.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-3/SUMMARY.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/raw/SOURCES.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/README.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/masking-strategy.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/orthogonal-predictive-factorization.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/self-supervised-learning.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/index.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/log.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-ijepa-blog.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-lecun-blog.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vicreg.md
+200 https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md
+200 https://github.com/MikoAL/TAICA_w10/tree/main/logs
+200 https://github.com/MikoAL/TAICA_w10/tree/main/logs/run-3/prompts

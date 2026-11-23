@@ -163,7 +163,7 @@ run-2 全部通過後，找一個沒看過過程的 reviewer 看整個 repo。�
 | **簡報語意檢查**（含備註、圖、測驗） | 第 1 次 **9／1／5** → 第 2 次 14／0／1 → 第 3 次（第 11、14、16 頁）1／1／1 → 第 4 次（第 14、16 頁）2／0／0 |
 | 瀏覽檢查 | 改字後 3 頁溢出 → 修完 0 |
 | 程式檢查 | Wiki／大綱／簡報 errors=0，32 個測試全過 |
-| 線上檢查 | LIVERESULT |
+| 線上檢查 | 17:45 對 GitHub Pages：16 頁 0 errors，簡報和本文件裡 26 個 GitHub 連結全部 HTTP 200 |
 
 完整整理：[logs/run-3/SUMMARY.md](https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-3/SUMMARY.md)；審查原文：[independent-review.md](https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-3/independent-review.md)
 

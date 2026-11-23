@@ -37,7 +37,7 @@ reviewer 看不到對話，所以有些地方要自己補查：00:20／00:40／0
 | 　第 3 次（只看第 11、14、16 頁） | 1 SUPPORTED／1 UNSUPPORTED／1 MISLEADING（第 16、14 頁）→ 修正後第 4 次（第 14、16 頁）2／0／0 | `semantic-slides-pass3.md`、`semantic-slides-pass4.md` |
 | 瀏覽檢查 | 過程中 3 頁溢出（第 8、12 頁，後來第 11 頁）→ 修完 16 頁 0 errors | `browser-pass2-overflow.txt`、`browser-pass4-overflow.txt`、`browser.txt` |
 | 程式檢查 | Wiki errors=0、大綱 errors=0、簡報 errors=0、32 個測試全過 | `wiki.txt`、`outline.txt`、`slides.txt`、`tests.txt` |
-| 線上檢查 | LIVERESULT | `live/browser.txt` |
+| 線上檢查 | 17:45 對 GitHub Pages：16 頁 0 errors，簡報和本文件裡 26 個 GitHub 連結全部 HTTP 200 | `live/browser.txt`、`live/links.txt` |
 
 （第 3、4 次只複查改過的頁，沒有再跑一次整份盲測；第 2 次之後改的是第 11、14、16 頁和對應的 Wiki。）
 
