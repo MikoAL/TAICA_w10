@@ -28,7 +28,7 @@ reviewer 看不到對話，所以有些地方要自己補查：00:20／00:40／0
 | 節點 | 結果 | 紀錄 |
 |---|---|---|
 | 舊大綱 × 新規則 | 4 errors（第 1、3、4、9 列把但書推給別頁）→ 修完 0 | `outline-pass1.txt`～`outline-pass4.txt` |
-| 逐頁 Wiki 檢查 | 第一批有 2 errors（引文帶到斷行連字號、漏引 1% 的出處）。那一批的腳本沒有在出錯時停下，等於還是「一次寫三頁」；後來改成一出錯就停 | `wiki-per-page.txt` |
+| 逐頁 Wiki 檢查 | 第二批（3 頁）有 2 errors（引文帶到斷行連字號、漏引 1% 的出處）。那一批的腳本沒有在出錯時停下，等於還是「一次寫三頁」；後來改成一出錯就停 | `wiki-per-page.txt` |
 | **Wiki 語意檢查**（全部 15 頁） | **148 項：128 SUPPORTED／20 PARTIAL／0 WRONG** | `semantic-wiki-pass1.md` |
 | 　查證 20 項 PARTIAL | 2 項是檢查者看漏（VICReg 附錄的表有「只用 Inv → collapse」；`more interpretable` 在原文第 866 行），改成補正確引文；其餘照原文改 | `wiki-changes.diff` |
 | 　Wiki 語意複查（只看改過的，非盲測） | 約 48 SUPPORTED／2 PARTIAL／0 WRONG（48 是檢查者的概數），2 項已修 | `semantic-wiki-recheck.md` |
