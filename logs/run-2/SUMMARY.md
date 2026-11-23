@@ -25,6 +25,7 @@
 | 第 12 頁再複查 | **SUPPORTED**（補上 Hopper 的但書、標題改成中性說法） | `semantic-recheck.md` |
 | 瀏覽檢查 | 16 頁 0 溢出、0 console error | `browser.txt`、`shots/` |
 | Wiki 檢查／單元測試 | errors=0；28 個測試全過 | `wiki.txt`、`tests.txt` |
+| 線上瀏覽檢查 | 第 1 次 1 個 console 404（`/favicon.ico`，只有線上才會出現）→ 內嵌 icon 後 0 錯誤；頁尾 15 個 Wiki 連結全部 200 | `../run-2-live/` |
 
 ## 學到的
 - **往前移有用，但不是萬能**：大綱檢查擋住了「漏但書」這一類，語意問題從 6 頁降到 3 頁。剩下的都是**措辭**問題（把「認為」寫成事實、圖和文字矛盾），只有語意檢查抓得到。

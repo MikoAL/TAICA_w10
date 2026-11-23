@@ -133,6 +133,7 @@ flowchart TD
 | 語意檢查（整份） | **12 / 2 / 1**（SUPPORTED / UNSUPPORTED / MISLEADING），run-1 第 1 次是 8 / 4 / 2 |
 | 語意複查 | 修過的頁全部通過；過程中發現大綱檢查的漏洞（見反思） |
 | 瀏覽檢查／Wiki 檢查／28 個單元測試 | 全部通過 |
+| **線上瀏覽檢查**（GitHub Pages 實際網址） | 第 1 次：16 頁 0 溢出，但有 1 個 console 404。原因是瀏覽器自動抓 `/favicon.ico`，本機用 `file://` 開不會出現 → 內嵌 icon 後重新發布，第 2 次 0 錯誤；頁尾 15 個 Wiki 連結全部 HTTP 200 |
 
 完整整理：[logs/run-2/SUMMARY.md](https://github.com/MikoAL/TAICA_w10/blob/main/logs/run-2/SUMMARY.md)
 

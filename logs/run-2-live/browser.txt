@@ -14,5 +14,4 @@ OK slide13 "JEPA 輸在哪裡" content bottom 518px <= 654px
 OK slide14 "回到大藍圖：LeCun 的六個模組" content bottom 415px <= 654px
 OK slide15 "帶走四句話" content bottom 410px <= 654px
 OK slide16 "自我檢測" content bottom 396px <= 654px
-CONSOLE_ERROR Failed to load resource: the server responded with a status of 404 ()
-SUMMARY slides=16 errors=1
+SUMMARY slides=16 errors=0

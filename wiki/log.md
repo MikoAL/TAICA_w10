@@ -80,3 +80,4 @@
 - 對 https://mikoal.github.io/TAICA_w10/ 跑 `check_browser.mjs`：16 頁 0 溢出，但有 1 個 console 錯誤（404）。
 - 原因：沒有指定 icon，瀏覽器自動去網域根目錄抓 `/favicon.ico`。本機用 `file://` 開不會發生，**只有線上才看得到**。
 - 修正：`<head>` 內嵌 SVG icon，重新發布後再跑一次。
+- 重新發布後第 2 次：16 頁 0 溢出、0 console 錯誤；簡報頁尾 15 個 Wiki 連結全部 HTTP 200。
