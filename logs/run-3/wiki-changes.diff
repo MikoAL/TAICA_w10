@@ -1,0 +1,297 @@
+diff --git a/wiki/concepts/collapse.md b/wiki/concepts/collapse.md
+index 3f93a1c..34e90c8 100644
+--- a/wiki/concepts/collapse.md
++++ b/wiki/concepts/collapse.md
+@@ -13 +13 @@ sources: [vicreg, vjepa, ijepa, meta-lecun-blog]
+-V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
++V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1][^vjepa-4]
+@@ -24,2 +24,3 @@ V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
+-| Contrastive（對比） | 把不同樣本的表示推開；LeCun 說以前只能這樣做 [^meta-lecun-blog-1] | SimCLR |
+-| EMA target encoder + stop-gradient | 答案由一個緩慢更新的 encoder 給，不讓梯度流回去 [^vjepa-2] | I-JEPA、V-JEPA |
++| Contrastive（對比） | 把不同樣本的表示推開；Meta 2022 文章說以前只能這樣做 [^meta-lecun-blog-1][^vicreg-6] | SimCLR [^vicreg-7] |
++| 不對稱架構（target encoder 用 EMA） | x 和 y 的 encoder 不對稱；[^ijepa-4][^ijepa-5] 答案由 target encoder 給，它的權重是 context encoder 的 EMA [^ijepa-2][^ijepa-3] | I-JEPA（論文沒有說自己用 stop-gradient） |
++| EMA + stop-gradient + predictor | 答案由 EMA 的 encoder 給，並且明寫不讓梯度流回答案那一邊 [^vjepa-2][^vjepa-3] | V-JEPA |
+@@ -43,0 +45,8 @@ V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
++[^vicreg-6]: [vicreg](../sources/vicreg.md) — "other samples and their distortions are pushed away"
++[^vicreg-7]: [vicreg](../sources/vicreg.md) — "given by the current batch of data as in SimCLR"
++[^ijepa-2]: [ijepa](../sources/ijepa.md) — "The use of an exponential moving average target-encoder"
++[^ijepa-3]: [ijepa](../sources/ijepa.md) — "are updated at each iteration via an exponential moving average of"
++[^vjepa-3]: [vjepa](../sources/vjepa.md) — "does not backpropagate through its argument"
++[^vjepa-4]: [vjepa](../sources/vjepa.md) — "puts a constant representation, regardless of its input."
++[^ijepa-4]: [ijepa](../sources/ijepa.md) — "JEPAs; we leverage an asymmetric architecture between the"
++[^ijepa-5]: [ijepa](../sources/ijepa.md) — "x- and y-encoders to avoid representation collapse."
+diff --git a/wiki/concepts/frozen-evaluation.md b/wiki/concepts/frozen-evaluation.md
+index 7be3fc9..eb409c7 100644
+--- a/wiki/concepts/frozen-evaluation.md
++++ b/wiki/concepts/frozen-evaluation.md
+@@ -27 +27,5 @@ V-JEPA 強調不調整模型參數、直接用凍結的骨幹網路。[^vjepa-1]
+-- JEPA 的優勢主要在**凍結評估**和**低樣本**；完整微調時優勢變小，I-JEPA 甚至略輸 MAE。[^ijepa-2]
++- **Linear probe（凍結）**：I-JEPA 明顯贏過 MAE 這類同樣不靠資料增強的方法。[^ijepa-6]
++- **低樣本**：只用 1% 標註時，I-JEPA 贏過架構相近的 MAE，而且訓練 epoch 比較少。[^ijepa-3][^ijepa-7][^ijepa-8]
++- **完整微調**：I-JEPA 87.1，MAE 87.8（表 15），略輸。[^ijepa-2][^ijepa-9]
++- **V-JEPA 的特徵 vs 像素（表 1）**：凍結評估時 K400 差距大（73.7 vs 68.6），SSv2 幾乎沒差（66.2 vs 66.0）；完整微調差距很小（85.6 vs 85.4）。論文自己的說法是凍結和微調都有進步。[^vjepa-4][^vjepa-5]
++- （AI 補充）合起來看：JEPA 的優勢在凍結評估和低樣本比較明顯，完整微調時變小；但不是每個凍結任務都明顯。
+@@ -41,0 +46,6 @@ V-JEPA 強調不調整模型參數、直接用凍結的骨幹網路。[^vjepa-1]
++[^ijepa-6]: [ijepa](../sources/ijepa.md) — "we see that I-JEPA significantly improves linear probing"
++[^ijepa-7]: [ijepa](../sources/ijepa.md) — "works best for each respective method. I-JEPA"
++[^ijepa-8]: [ijepa](../sources/ijepa.md) — "forms MAE while requiring less pretraining epochs when"
++[^ijepa-9]: [ijepa](../sources/ijepa.md) — "Table 15. Finetuning on the full ImageNet dataset. I-JEPA achieves competitive performance."
++[^vjepa-4]: [vjepa](../sources/vjepa.md) — "Table 1 Pixels vs. Featurized Targets. We ablate the effect of computing the prediction loss in feature space vs pixel space."
++[^vjepa-5]: [vjepa](../sources/vjepa.md) — "diction in both frozen evaluation of the video backbone,"
+diff --git a/wiki/concepts/generative-vs-joint-embedding.md b/wiki/concepts/generative-vs-joint-embedding.md
+index a259b32..861f56f 100644
+--- a/wiki/concepts/generative-vs-joint-embedding.md
++++ b/wiki/concepts/generative-vs-joint-embedding.md
+@@ -13 +13 @@ I-JEPA 論文把 [self-supervised learning](self-supervised-learning.md) 的架
+-| Generative（生成式） | 用 decoder 直接**重建**訊號 y [^ijepa-3] | MAE [^ijepa-5] |
++| Generative（生成式） | 用 decoder 直接**重建**訊號 y [^ijepa-3] | MAE [^ijepa-7] |
+@@ -37,0 +38 @@ JEPA 像生成式一樣「從一部分預測另一部分」，但像聯合嵌入
++[^ijepa-7]: [ijepa](../sources/ijepa.md) — "By reconstructing missing patches in pixels space, MAE"
+diff --git a/wiki/concepts/jepa.md b/wiki/concepts/jepa.md
+index 7abdd71..cf1e916 100644
+--- a/wiki/concepts/jepa.md
++++ b/wiki/concepts/jepa.md
+@@ -13 +13 @@ JEPA 從訊號 x 的嵌入，預測相容訊號 y 的**嵌入**，而不是預
+-- **Target encoder**：把被遮住的部分 y 編碼成「答案」表示。它是 context encoder 的指數移動平均（EMA）。[^ijepa-2]
++- **Target encoder**：產生「答案」表示。輸入不遮，遮的是它的**輸出**：從輸出裡取出 y 區域的表示。[^ijepa-4] 它的權重是 context encoder 的指數移動平均（EMA）。[^ijepa-2][^ijepa-5]
+@@ -16 +16 @@ JEPA 從訊號 x 的嵌入，預測相容訊號 y 的**嵌入**，而不是預
+-訓練目標：預測出的表示和目標表示之間的平均 L2 距離越小越好。[^ijepa-3]
++I-JEPA 的訓練目標：預測出的表示和目標表示之間的平均 L2 距離越小越好。[^ijepa-3]
+@@ -18 +18 @@ JEPA 從訊號 x 的嵌入，預測相容訊號 y 的**嵌入**，而不是預
+-$$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2^2$$
++$$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\sum_{j \in B_i}\lVert \hat{s}_{y_j} - s_{y_j} \rVert_2^2$$
+@@ -20 +20 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
+-（白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。）[^ijepa-3]
++（白話：M 塊目標區域，每塊把塊內每個 patch「預測的表示」和「真正的表示」的差加起來，再對 M 塊取平均。）[^ijepa-3]
+@@ -23 +23 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
+-世界很多細節本來就無法預測，生成式模型卻要補完每一個細節。[^meta-ijepa-blog-2] JEPA 在抽象表示裡比較，可以忽略不重要的細節。[^meta-ijepa-blog-3] 實驗證據見 [像素 vs 表示](pixel-vs-feature-prediction.md)。
++世界很多細節本來就無法預測，生成式模型卻要補完每一個細節。[^meta-ijepa-blog-2] JEPA 在抽象表示裡比較，可以忽略不重要的細節。[^meta-ijepa-blog-3][^meta-lecun-blog-3] 實驗證據見 [像素 vs 表示](pixel-vs-feature-prediction.md)。
+@@ -28 +28 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
+-| 2022 | LeCun 構想 | JEPA 是 world model 的核心，可以一層疊一層 [^meta-lecun-blog-1] |
++| 2022 | LeCun 構想 | JEPA 是建立 world model 的一個關鍵元素，可以一層疊一層 [^meta-lecun-blog-2][^meta-lecun-blog-1] |
+@@ -31 +31 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
+-| 2026 | [JEPA-Anything](../sources/jepa-anything.md) | 論文報告：把目標拆成正交因子，用在七個領域 [^jepa-anything-1] |
++| 2026 | [JEPA-Anything](../sources/jepa-anything.md) | 論文報告：把目標拆成正交因子，用在七個領域 [^jepa-anything-1][^jepa-anything-2] |
+@@ -34 +34 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
+-預測表示有一個偷懶解：encoder 不管輸入都輸出同一個東西。這叫 [collapse](collapse.md)。[^vjepa-2]
++預測表示有一個偷懶解：encoder 不管輸入都輸出同一個東西。這叫 [collapse](collapse.md)。[^vjepa-2][^vjepa-3]
+@@ -50,0 +51,6 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
++[^ijepa-4]: [ijepa](../sources/ijepa.md) — "the target blocks are obtained by masking the output of the target-encoder, not the input"
++[^ijepa-5]: [ijepa](../sources/ijepa.md) — "are updated at each iteration via an exponential moving average of"
++[^meta-lecun-blog-2]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "One key element of a solution is the Joint Embedding Predictive Architecture (JEPA)."
++[^meta-lecun-blog-3]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "it naturally produces informative abstract representations of the input that eliminate irrelevant details"
++[^vjepa-3]: [vjepa](../sources/vjepa.md) — "puts a constant representation, regardless of its input."
++[^jepa-anything-2]: [jepa-anything](../sources/jepa-anything.md) — "decomposes latent targets into complementary factors"
+diff --git a/wiki/concepts/masking-strategy.md b/wiki/concepts/masking-strategy.md
+index 4091ac0..33f04c0 100644
+--- a/wiki/concepts/masking-strategy.md
++++ b/wiki/concepts/masking-strategy.md
+@@ -9 +9,3 @@ sources: [ijepa, vjepa, meta-ijepa-blog]
+-JEPA 的訓練題目是「從看得到的部分，猜被遮住部分的表示」。遮哪裡、遮多大，決定題目難度，也決定模型學到的是語意還是細節。[^ijepa-1]
++JEPA 的訓練題目是「從看得到的部分，猜被遮住部分的表示」。論文發現怎麼遮很重要。[^ijepa-1]
++
++（AI 補充）直覺：遮哪裡、遮多大，決定題目難不難，也影響模型學到的是語意還是細節。
+@@ -17 +19 @@ JEPA 的訓練題目是「從看得到的部分，猜被遮住部分的表示」
+-- 影片上遮大塊、連續的時空區塊，multi-block 最好。[^vjepa-1]
++- 影片上用很多個時空區塊當遮罩（short-range 和 long-range 兩種），multi-block 最好。[^vjepa-1][^vjepa-2]
+@@ -27,0 +30 @@ JEPA 的訓練題目是「從看得到的部分，猜被遮住部分的表示」
++[^vjepa-2]: [vjepa](../sources/vjepa.md) — "We leverage two types of masks: short-range masks,"
+diff --git a/wiki/concepts/orthogonal-predictive-factorization.md b/wiki/concepts/orthogonal-predictive-factorization.md
+index 1d1531a..3859acc 100644
+--- a/wiki/concepts/orthogonal-predictive-factorization.md
++++ b/wiki/concepts/orthogonal-predictive-factorization.md
+@@ -11 +11 @@ sources: [jepa-anything]
+-標準 [JEPA](jepa.md) 只有一個目標嵌入、一個 predictor。論文認為這樣容易預測的結構會主導訓練，比較弱的結構被忽略或收到互相衝突的梯度。[^jepa-anything-2]
++標準 [JEPA](jepa.md) 只有一個目標嵌入、一個 predictor。論文認為這樣容易預測或變異大的結構**可能**主導訓練，比較弱的結構**可能**收到互相衝突的梯度。[^jepa-anything-2]
+diff --git a/wiki/concepts/pixel-vs-feature-prediction.md b/wiki/concepts/pixel-vs-feature-prediction.md
+index 430dafb..15a2850 100644
+--- a/wiki/concepts/pixel-vs-feature-prediction.md
++++ b/wiki/concepts/pixel-vs-feature-prediction.md
+@@ -25 +25 @@ JEPA 在嵌入空間算 loss。[^ijepa-1]
+-- V-JEPA 完整微調時，兩者差距很小：85.4 vs 85.6（表 1）；優勢主要在凍結評估。[^vjepa-1][^vjepa-2]
++- V-JEPA 完整微調時，兩者差距很小：像素 85.4、特徵 85.6（表 1）。凍結評估時 K400 差距較大（68.6 vs 73.7），SSv2 幾乎沒差（66.0 vs 66.2）（表 1）。[^vjepa-1][^vjepa-2]
+diff --git a/wiki/concepts/self-supervised-learning.md b/wiki/concepts/self-supervised-learning.md
+index 8764a0d..cbf881b 100644
+--- a/wiki/concepts/self-supervised-learning.md
++++ b/wiki/concepts/self-supervised-learning.md
+@@ -10,0 +11,2 @@ Self-supervised learning 是一種學「表示」（representation）的方法
++（AI 補充）「表示」（representation，也叫嵌入 embedding）：模型把一張圖轉成的一串數字。意思相近的圖，這串數字也應該相近。
++
+@@ -17 +19,3 @@ I-JEPA 論文用 Energy-Based Model 的角度統一各種方法：相容的輸
+-LeCun 認為人類和動物主要靠觀察、以不分任務的非監督方式學到大量背景知識。[^meta-lecun-blog-1] 自監督學習就是讓機器也這樣學。
++LeCun 說人和動物似乎能靠觀察和極少量的互動，以不分任務的非監督方式學到大量背景知識。[^meta-lecun-blog-1][^meta-lecun-blog-2]
++
++（AI 補充）自監督學習可以看成讓機器也這樣學。
+@@ -26,0 +31 @@ LeCun 認為人類和動物主要靠觀察、以不分任務的非監督方式
++[^meta-lecun-blog-2]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "seem able to learn enormous amounts of background knowledge about how the world works through observation"
+diff --git a/wiki/concepts/world-model.md b/wiki/concepts/world-model.md
+index f082178..e334e2f 100644
+--- a/wiki/concepts/world-model.md
++++ b/wiki/concepts/world-model.md
+@@ -14 +14 @@ JEPA-Anything 給的寬鬆定義：從「情境」（context）建立內部狀
+-LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blog-3] 自駕系統卻需要上百萬、上十億筆標註資料，還要在虛擬環境試上百萬次。[^meta-lecun-blog-4] 他認為差別在於人類靠觀察累積了大量「世界怎麼運作」的背景知識，也就是常識。[^meta-lecun-blog-5]
++LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blog-3] 自駕系統卻需要上百萬、上十億筆標註資料，還要在虛擬環境試上百萬次。[^meta-lecun-blog-4] 他說人和動物似乎能靠觀察學到大量「世界怎麼運作」的背景知識。[^meta-lecun-blog-13] 他提出一個假說：這些知識可能就是常識的基礎。[^meta-lecun-blog-5]
+@@ -27 +27 @@ LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blo
+-- LeCun 架構中，world model 的核心就是 [JEPA](jepa.md)。[^meta-lecun-blog-11]
++- LeCun 的架構以 world model 為中心，[JEPA](jepa.md) 是建立它的「一個關鍵元素」。[^meta-lecun-blog-11][^meta-lecun-blog-14]
+@@ -31 +31 @@ LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blo
+-- 這是一個**研究方向**，Meta 自己說訓練 world model 是未來幾十年的主要挑戰。[^meta-lecun-blog-12]
++- 這是一個**研究方向**，原文說「可以說」（it could be argued）訓練 world model 是未來幾十年的主要挑戰。[^meta-lecun-blog-12]
+@@ -47,2 +47,2 @@ LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blo
+-[^meta-lecun-blog-11]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "trainable encoders that extract abstract representations of them"
+-[^meta-lecun-blog-12]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "training world models constitutes the main challenge toward real progress in AI over the next decades"
++[^meta-lecun-blog-11]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "One key element of a solution is the Joint Embedding Predictive Architecture (JEPA)."
++[^meta-lecun-blog-12]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "it could be argued that training world models constitutes the main challenge toward real progress in AI over the next decades"
+@@ -50 +50,3 @@ LeCun 的出發點：青少年大約 20 小時就學會開車。[^meta-lecun-blo
+-[^jepa-anything-1]: [jepa-anything](../sources/jepa-anything.md) — "World modeling enables intelligence to anticipate consequences, guide interventions, and learn from interaction."
++[^jepa-anything-1]: [jepa-anything](../sources/jepa-anything.md) — "a model that constructs a latent state from context and uses it to predict another state of the same underlying world"
++[^meta-lecun-blog-13]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "seem able to learn enormous amounts of background knowledge about how the world works through observation"
++[^meta-lecun-blog-14]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "The centerpiece of the architecture is the predictive world model."
+diff --git a/wiki/sources/ijepa.md b/wiki/sources/ijepa.md
+index fef45c3..92f4203 100644
+--- a/wiki/sources/ijepa.md
++++ b/wiki/sources/ijepa.md
+@@ -12 +12 @@ sources: [ijepa]
+-從圖片中**一塊看得到的區域**（context block），預測**幾塊被遮住區域的表示**（target blocks），而且不需要人工設計的資料增強。[^ijepa-2]
++從圖片中**一塊看得到的區域**（context block），預測**幾塊被遮住區域的表示**（target blocks），而且不需要人工設計的資料增強。[^ijepa-2][^ijepa-20]
+@@ -16 +16 @@ sources: [ijepa]
+-- 和生成式方法（如 MAE）最大的差別：loss 算在**嵌入空間**，不是輸入（像素）空間。[^ijepa-4] 見 [像素 vs 表示](../concepts/pixel-vs-feature-prediction.md)。
++- 和生成式方法（如 MAE）一個關鍵差別：loss 算在**嵌入空間**，不是輸入（像素）空間。[^ijepa-4] 見 [像素 vs 表示](../concepts/pixel-vs-feature-prediction.md)。
+@@ -19,2 +19,2 @@ sources: [ijepa]
+-- 為了避免 [collapse](../concepts/collapse.md)，target encoder 是 context encoder 的指數移動平均（EMA）。[^ijepa-7]
+-- loss 就是預測出的區塊表示和目標區塊表示之間的平均 L2 距離。[^ijepa-8]
++- 為了避免 [collapse](../concepts/collapse.md)，x 和 y 兩邊的 encoder 用**不對稱**的架構。[^ijepa-21][^ijepa-22] target encoder 的權重是 context encoder 的指數移動平均（EMA），論文說這對訓練是必要的。[^ijepa-7][^ijepa-23][^ijepa-24]
++- loss 就是預測出的 patch 表示和目標 patch 表示之間的平均 L2 距離。[^ijepa-8]
+@@ -31,2 +31,3 @@ sources: [ijepa]
+-- 大模型才和 view-invariance 方法打平，不是大幅領先。[^ijepa-15]
+-- 只在圖片上驗證；消融實驗多用 ViT-B/16 和 1% 標註。[^ijepa-17]
++- ImageNet linear probe：大模型才和 view-invariance 方法打平，不是大幅領先。[^ijepa-15] 低樣本和低階任務（物件計數、深度預測）則贏過它們。[^ijepa-25][^ijepa-26]
++- 表 6 的消融實驗用 ViT-B/16 和 1% 標註，表 7 用 ViT-L/16（表 6、表 7）。[^ijepa-17][^ijepa-10][^ijepa-27]
++- （AI 補充）這篇的實驗都在圖片上；影片要看 [V-JEPA](vjepa.md)。
+@@ -56,0 +58,8 @@ sources: [ijepa]
++[^ijepa-20]: [ijepa](ijepa.md) — "Architecture uses a single context block to predict"
++[^ijepa-21]: [ijepa](ijepa.md) — "JEPAs; we leverage an asymmetric architecture between the"
++[^ijepa-22]: [ijepa](ijepa.md) — "x- and y-encoders to avoid representation collapse."
++[^ijepa-23]: [ijepa](ijepa.md) — "are updated at each iteration via an exponential moving average of"
++[^ijepa-24]: [ijepa](ijepa.md) — "has proven essential for training JEAs with Vision"
++[^ijepa-25]: [ijepa](ijepa.md) — "trained at resolution 448 surpasses previous methods"
++[^ijepa-26]: [ijepa](ijepa.md) — "ing pretraining and outperforms view-invariance based methods"
++[^ijepa-27]: [ijepa](ijepa.md) — "a ViT-B/16 for 300 epochs. Comparison of proposed multi-block masking strategy."
+diff --git a/wiki/sources/jepa-anything.md b/wiki/sources/jepa-anything.md
+index ee8263c..c52fbec 100644
+--- a/wiki/sources/jepa-anything.md
++++ b/wiki/sources/jepa-anything.md
+@@ -15 +15 @@ sources: [jepa-anything]
+-論文對標準 [JEPA](../concepts/jepa.md) 的診斷：只有一個目標嵌入、一個 predictor 時，容易預測或變異大的結構會主導訓練，比較弱的結構會收到互相衝突的梯度。[^jepa-anything-3]
++論文對標準 [JEPA](../concepts/jepa.md) 的診斷：只有一個目標嵌入、一個 predictor 時，容易預測或變異大的結構**可能**主導訓練，比較弱的結構**可能**收到互相衝突的梯度。[^jepa-anything-3]
+@@ -21 +21 @@ sources: [jepa-anything]
+-- 測試了七個領域：影像、生物、臨床、控制、分子動力學、物理場、天氣。[^jepa-anything-6]
++- 測試了七個領域：影像、生物、臨床、控制、分子動力學、物理場、天氣。[^jepa-anything-13]
+@@ -24 +24 @@ sources: [jepa-anything]
+-- 分子模擬：四個系統的一步誤差和 100 步誤差都最低。[^jepa-anything-7]
++- 分子模擬：四個系統的一步誤差和 100 步誤差，在論文比較的方法中都最低。[^jepa-anything-7][^jepa-anything-14]
+@@ -48,0 +49,2 @@ sources: [jepa-anything]
++[^jepa-anything-13]: [jepa-anything](jepa-anything.md) — "We evaluate JEPA -Anything across seven domains : vision, biology, clinical trajectories, control, molecular dynamics, physical fields, and weather."
++[^jepa-anything-14]: [jepa-anything](jepa-anything.md) — "It achieves the lowest one-step and 100-step molecular errors among compared methods in all four systems."
+diff --git a/wiki/sources/meta-ijepa-blog.md b/wiki/sources/meta-ijepa-blog.md
+index 6956121..cf6e7aa 100644
+--- a/wiki/sources/meta-ijepa-blog.md
++++ b/wiki/sources/meta-ijepa-blog.md
+@@ -22 +22 @@ I-JEPA 學習的方式是比較圖片的抽象表示，而不是比較像素本
+-- 未來方向：把 JEPA 推到影片、聲音等更豐富的資料。[^meta-ijepa-blog-11]
++- 未來方向：把 JEPA 推到影片、圖文配對等更豐富的資料。[^meta-ijepa-blog-11][^meta-ijepa-blog-14]
+@@ -47,0 +48 @@ I-JEPA 學習的方式是比較圖片的抽象表示，而不是比較像素本
++[^meta-ijepa-blog-14]: [meta-ijepa-blog](meta-ijepa-blog.md) — "We look forward to working to extend the JEPA approach to other domains, like image-text paired data and video data."
+diff --git a/wiki/sources/meta-lecun-blog.md b/wiki/sources/meta-lecun-blog.md
+index 960d082..23112f2 100644
+--- a/wiki/sources/meta-lecun-blog.md
++++ b/wiki/sources/meta-lecun-blog.md
+@@ -12 +12 @@ sources: [meta-lecun-blog]
+-LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能學會開車。[^meta-lecun-blog-2] 他主張關鍵是讓機器學會「世界怎麼運作」的內部模型，也就是 [world model](../concepts/world-model.md)。[^meta-lecun-blog-3]
++LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能學會開車。[^meta-lecun-blog-2] 他提出，關鍵**可能**是讓機器學會「世界怎麼運作」的內部模型，也就是 [world model](../concepts/world-model.md)。[^meta-lecun-blog-3]
+@@ -14 +14 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-他提出一個由六個模組組成的架構。[^meta-lecun-blog-4] 其中 world model 的核心就是 [JEPA](../concepts/jepa.md)：把兩個輸入各自編碼成抽象表示，再從一個預測另一個。[^meta-lecun-blog-5]
++他提出一個由六個模組組成的架構。[^meta-lecun-blog-4] 架構的中心是 world model。[^meta-lecun-blog-11] [JEPA](../concepts/jepa.md) 是建立它的「一個關鍵元素」：[^meta-lecun-blog-12] 把兩個輸入各自編碼成抽象表示，再從一個預測另一個。[^meta-lecun-blog-5][^meta-lecun-blog-13]
+@@ -16 +16 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-訓練 JEPA 要防止 [collapse](../concepts/collapse.md)。文章說過去只能用 contrastive 方法，現在有 VICReg 這類 regularized 方法可用。[^meta-lecun-blog-6]
++怎麼訓練 JEPA？文章說過去只能用 contrastive 方法，但表示維度很高時不實際；[^meta-lecun-blog-16] 近兩年出現了 regularized 方法，VICReg 是其中一種。[^meta-lecun-blog-6][^meta-lecun-blog-14][^meta-lecun-blog-15]
+@@ -21 +21 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-- Meta 自己也承認：怎麼訓練 world model 是未來幾十年 AI 的主要挑戰。[^meta-lecun-blog-9]
++- 文章說得有保留：「可以說」（it could be argued）怎麼訓練 world model 是未來幾十年 AI 的主要挑戰。[^meta-lecun-blog-9]
+@@ -24 +24,2 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-- 嬰兒、動物的比較是假說，文章沒有給證據。[^meta-lecun-blog-10]
++- 「累積的背景知識可能是常識的基礎」是假說，原文用 can be hypothesized。[^meta-lecun-blog-10]
++- （AI 補充）嬰兒、動物的例子，文章沒有附實驗證據。
+@@ -33 +34 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-[^meta-lecun-blog-3]: [meta-lecun-blog](meta-lecun-blog.md) — "internal models of how the world works"
++[^meta-lecun-blog-3]: [meta-lecun-blog](meta-lecun-blog.md) — "internal models of how the world works — may be the key"
+@@ -35 +36 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-[^meta-lecun-blog-5]: [meta-lecun-blog](meta-lecun-blog.md) — "trainable encoders that extract abstract representations of them"
++[^meta-lecun-blog-5]: [meta-lecun-blog](meta-lecun-blog.md) — "Inputs x and y are fed to trainable encoders that extract abstract representations of them"
+@@ -39,2 +40,8 @@ LeCun 指出人類學東西遠比 AI 有效率：青少年大約 20 小時就能
+-[^meta-lecun-blog-9]: [meta-lecun-blog](meta-lecun-blog.md) — "training world models constitutes the main challenge toward real progress in AI over the next decades"
+-[^meta-lecun-blog-10]: [meta-lecun-blog](meta-lecun-blog.md) — "It can be hypothesized"
++[^meta-lecun-blog-9]: [meta-lecun-blog](meta-lecun-blog.md) — "it could be argued that training world models constitutes the main challenge toward real progress in AI over the next decades"
++[^meta-lecun-blog-10]: [meta-lecun-blog](meta-lecun-blog.md) — "It can be hypothesized that this accumulated knowledge may constitute the basis for what is often called common sense."
++[^meta-lecun-blog-11]: [meta-lecun-blog](meta-lecun-blog.md) — "The centerpiece of the architecture is the predictive world model."
++[^meta-lecun-blog-12]: [meta-lecun-blog](meta-lecun-blog.md) — "One key element of a solution is the Joint Embedding Predictive Architecture (JEPA)."
++[^meta-lecun-blog-13]: [meta-lecun-blog](meta-lecun-blog.md) — "A predictor module is trained to predict s y from s x"
++[^meta-lecun-blog-14]: [meta-lecun-blog](meta-lecun-blog.md) — "An alternative training strategy has emerged in the last two years: regularized methods."
++[^meta-lecun-blog-15]: [meta-lecun-blog](meta-lecun-blog.md) — "One way is the VICReg method"
++[^meta-lecun-blog-16]: [meta-lecun-blog](meta-lecun-blog.md) — "But this is rather impractical when the representations are high-dimensional."
+diff --git a/wiki/sources/vicreg.md b/wiki/sources/vicreg.md
+index 3afb296..5efa726 100644
+--- a/wiki/sources/vicreg.md
++++ b/wiki/sources/vicreg.md
+@@ -15 +15 @@ sources: [vicreg]
+-- **Invariance（不變）**：同一張圖的兩個視角，嵌入要接近。這一項單獨用就會 collapse。[^vicreg-3]
++- **Invariance（不變）**：同一張圖的兩個視角，嵌入要接近。這一項單獨用就會 collapse（附錄的消融表）。[^vicreg-9]
+@@ -25 +25 @@ sources: [vicreg]
+-- VICReg 的主要賣點是**可解釋、模組化**，不是準確度大勝；ImageNet 上和 Barlow Twins 打平（表 1）。[^vicreg-7]
++- VICReg 的主要賣點是**可解釋、模組化**，不是準確度大勝；ImageNet 上和 Barlow Twins 打平（表 1）。[^vicreg-7][^vicreg-10][^vicreg-11]
+@@ -38,0 +39,3 @@ sources: [vicreg]
++[^vicreg-9]: [vicreg](vicreg.md) — "Inv 1 0 0 collapse"
++[^vicreg-10]: [vicreg](vicreg.md) — "The main advantage of VICReg is the modularity of its objective function"
++[^vicreg-11]: [vicreg](vicreg.md) — "avoiding collapse, while being clearer, more interpretable, and working with independent branches"
+diff --git a/wiki/sources/vjepa.md b/wiki/sources/vjepa.md
+index c52ac89..0de7a37 100644
+--- a/wiki/sources/vjepa.md
++++ b/wiki/sources/vjepa.md
+@@ -12 +12 @@ sources: [vjepa]
+-V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重建像素、不用文字、不用負樣本。[^vjepa-2]
++V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重建像素、不用文字、不用負樣本。[^vjepa-2][^vjepa-19]
+@@ -17,3 +17,4 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
+-- 單純的特徵預測有一個偷懶解（encoder 輸出常數），也就是 [collapse](../concepts/collapse.md)。[^vjepa-4]
+-- 防法是 stop-gradient 加上 predictor，以及緩慢更新的 EMA target encoder。[^vjepa-5]
+-- 遮罩用大塊、連續的時空區塊，multi-block 表現最好。[^vjepa-6] 見 [masking strategy](../concepts/masking-strategy.md)。
++- 單純的特徵預測有一個偷懶解（encoder 輸出常數），也就是 [collapse](../concepts/collapse.md)。[^vjepa-4][^vjepa-20]
++- 防法是 EMA encoder、stop-gradient 加上 predictor。[^vjepa-5][^vjepa-21][^vjepa-22]
++- loss 和 I-JEPA 類似，但改用 ℓ1（I-JEPA 是 L2），論文說比較穩定。[^vjepa-23]
++- 遮罩用很多個時空區塊（short-range 和 long-range 兩種），multi-block 表現最好。[^vjepa-6][^vjepa-26] 見 [masking strategy](../concepts/masking-strategy.md)。
+@@ -25,2 +26,2 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
+-- 需要理解**動作**的任務特別強：SSv2 進步 +21 分。[^vjepa-10]
+-- 預訓練看的樣本明顯比較少。[^vjepa-11]
++- 和**影像模型**比（凍結評估），需要理解**動作**的任務進步明顯：SSv2 +21 分。[^vjepa-10]
++- 和預測像素的方法（VideoMAE、OmniMAE、Hiera）比，預訓練看的樣本明顯比較少。[^vjepa-11][^vjepa-24]
+@@ -31,2 +32,3 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
+-- 只看外觀就能做的任務（如 ImageNet），影像模型仍然領先；V-JEPA 74.8% 對 OmniMAE 75.1%。[^vjepa-14]
+-- 完整微調時，預測特徵和預測像素差距很小：85.4 vs 85.6（表 1），優勢主要出現在凍結評估。[^vjepa-15][^vjepa-18]
++- 看靜態外觀的任務，V-JEPA 只是**縮小**影片模型和影像模型的差距。[^vjepa-25]
++- 和預測像素的方法比（凍結評估，都用 ViT-L 或同級架構），V-JEPA 只在 ImageNet 略輸：74.8% 對 OmniMAE 75.1%；這個 OmniMAE 是**直接用 ImageNet 訓練**的。上面的 77.9% 是更大的 ViT-H/16。[^vjepa-14][^vjepa-27][^vjepa-9]
++- 完整微調時，預測特徵和預測像素差距很小：85.6 vs 85.4（表 1）。凍結評估時 K400 差距較大（73.7 vs 68.6），SSv2 幾乎沒差（66.2 vs 66.0）（表 1）。[^vjepa-15][^vjepa-18]
+@@ -47 +49 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
+-[^vjepa-10]: [vjepa](vjepa.md) — "V-JEPA shows a significant performance improvement on tasks requiring motion understanding (+21 points on SSv2)"
++[^vjepa-10]: [vjepa](vjepa.md) — "Compared to image-models that excel under the frozen evaluation, V-JEPA shows a significant performance improvement on tasks requiring motion understanding (+21 points on SSv2)"
+@@ -51 +53 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
+-[^vjepa-14]: [vjepa](vjepa.md) — "V-JEPA outperforms the baselines on all downstream tasks, except ImageNet, where the model achieves 74.8% compared to 75.1% of an OmniMAE model"
++[^vjepa-14]: [vjepa](vjepa.md) — "V-JEPA outperforms the baselines on all downstream tasks, except ImageNet, where the model achieves 74.8% compared to 75.1% of an OmniMAE model trained directly on ImageNet"
+@@ -55,0 +58,9 @@ V-JEPA 是一系列只用「特徵預測」目標訓練的視覺模型：不重
++[^vjepa-19]: [vjepa](vjepa.md) — "the use of pretrained image encoders, text, negative examples, reconstruction, or other sources of supervision."
++[^vjepa-20]: [vjepa](vjepa.md) — "puts a constant representation, regardless of its input."
++[^vjepa-21]: [vjepa](vjepa.md) — "does not backpropagate through its argument"
++[^vjepa-22]: [vjepa](vjepa.md) — "is an exponential moving average of the network"
++[^vjepa-23]: [vjepa](vjepa.md) — "we modify it to use an ℓ1 regression, which we found to"
++[^vjepa-24]: [vjepa](vjepa.md) — "MAE (Tong et al., 2022), and Hiera (Ryali et al., 2023), which leverage a pixel-reconstruction loss."
++[^vjepa-25]: [vjepa](vjepa.md) — "reduces the gap between video and image models on tasks requiring static appearance-based features."
++[^vjepa-26]: [vjepa](vjepa.md) — "We leverage two types of masks: short-range masks,"
++[^vjepa-27]: [vjepa](vjepa.md) — "a ViT-L architecture or a comparable Hiera-L."

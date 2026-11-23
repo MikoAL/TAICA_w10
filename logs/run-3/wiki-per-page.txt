@@ -1,0 +1,65 @@
+## 2026-11-23 16:26:39 after editing wiki/sources/meta-lecun-blog.md
+SUMMARY errors=0 warnings=36
+## 2026-11-23 16:26:39 after editing wiki/concepts/world-model.md
+SUMMARY errors=0 warnings=36
+## 2026-11-23 16:26:40 after editing wiki/concepts/self-supervised-learning.md
+SUMMARY errors=0 warnings=37
+## 2026-11-23 16:26:41 after editing wiki/concepts/jepa.md
+SUMMARY errors=0 warnings=37
+## 2026-11-23 16:26:41 after editing wiki/concepts/collapse.md
+SUMMARY errors=0 warnings=37
+## 2026-11-23 16:27:03 after editing wiki/concepts/frozen-evaluation.md
+NUMBER_NOT_IN_QUOTE wiki/concepts/frozen-evaluation.md:28 number 1 not in any cited quote
+QUOTE_NOT_FOUND wiki/concepts/frozen-evaluation.md:47 quote not found in raw/ijepa/paper.txt
+SUMMARY errors=2 warnings=45
+## 2026-11-23 16:27:04 after editing wiki/concepts/pixel-vs-feature-prediction.md
+NUMBER_NOT_IN_QUOTE wiki/concepts/frozen-evaluation.md:28 number 1 not in any cited quote
+QUOTE_NOT_FOUND wiki/concepts/frozen-evaluation.md:47 quote not found in raw/ijepa/paper.txt
+SUMMARY errors=2 warnings=49
+## 2026-11-23 16:27:04 after editing wiki/sources/vjepa.md
+NUMBER_NOT_IN_QUOTE wiki/concepts/frozen-evaluation.md:28 number 1 not in any cited quote
+QUOTE_NOT_FOUND wiki/concepts/frozen-evaluation.md:47 quote not found in raw/ijepa/paper.txt
+SUMMARY errors=2 warnings=53
+(note: pass above ran three pages in one script, which did not stop at the first error; fixed below)
+## 2026-11-23 16:27:15 after editing wiki/concepts/frozen-evaluation.md
+SUMMARY errors=0 warnings=53
+(below: fixes after semantic-wiki-pass1.md; the script now stops at the first failing page)
+## 2026-11-23 17:36:28 after editing wiki/sources/ijepa.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:29 after editing wiki/sources/jepa-anything.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:29 after editing wiki/sources/meta-ijepa-blog.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:30 after editing wiki/sources/meta-lecun-blog.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:31 after editing wiki/sources/vicreg.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:32 after editing wiki/sources/vjepa.md
+SUMMARY errors=0 warnings=54
+## 2026-11-23 17:36:33 after editing wiki/concepts/masking-strategy.md
+SUMMARY errors=0 warnings=55
+## 2026-11-23 17:36:34 after editing wiki/concepts/jepa.md
+SUMMARY errors=0 warnings=55
+## 2026-11-23 17:36:34 after editing wiki/concepts/collapse.md
+SUMMARY errors=0 warnings=55
+## 2026-11-23 17:36:35 after editing wiki/concepts/generative-vs-joint-embedding.md
+SUMMARY errors=0 warnings=55
+## 2026-11-23 17:36:36 after editing wiki/concepts/orthogonal-predictive-factorization.md
+SUMMARY errors=0 warnings=55
+## 2026-11-23 17:36:37 after editing wiki/concepts/self-supervised-learning.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:37:06 after editing wiki/concepts/collapse.md
+SUMMARY errors=0 warnings=56
+(below: fixes after semantic-wiki-recheck.md and semantic-slides-pass2.md)
+## 2026-11-23 17:40:14 after editing wiki/sources/ijepa.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:40:15 after editing wiki/sources/meta-lecun-blog.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:40:15 after editing wiki/concepts/world-model.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:40:16 after editing wiki/concepts/jepa.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:40:17 after editing wiki/concepts/frozen-evaluation.md
+SUMMARY errors=0 warnings=56
+## 2026-11-23 17:42:52 after editing wiki/concepts/world-model.md
+SUMMARY errors=0 warnings=56

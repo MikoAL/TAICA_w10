@@ -24,7 +24,12 @@ V-JEPA 強調不調整模型參數、直接用凍結的骨幹網路。[^vjepa-1]
 （AI 補充）看模型能不能用很少的標註學會。
 
 ## 為什麼要分清楚
-- JEPA 的優勢主要在**凍結評估**和**低樣本**；完整微調時優勢變小，I-JEPA 甚至略輸 MAE。[^ijepa-2]
+- **Linear probe（凍結）**：I-JEPA 明顯贏過 MAE 這類同樣不靠資料增強的方法。[^ijepa-6]
+- **低樣本**：只用 1% 標註時，I-JEPA 贏過架構相近的 MAE，而且訓練 epoch 比較少。[^ijepa-3][^ijepa-7][^ijepa-8]
+- **完整微調**：I-JEPA 87.1，MAE 87.8（表 15），略輸。[^ijepa-2][^ijepa-9]
+- **V-JEPA 的特徵 vs 像素（表 1）**：凍結評估時 K400 差距大（73.7 vs 68.6），SSv2 幾乎沒差（66.2 vs 66.0）；完整微調差距很小（85.6 vs 85.4）。論文自己的說法是凍結和微調都有進步。[^vjepa-4][^vjepa-5]
+- **和 view-invariance 方法比**（ImageNet linear probe）：大模型才打平，不是大幅領先。[^ijepa-10]
+- （AI 補充）合起來看：和 MAE、預測像素的做法比，JEPA 的優勢在凍結評估和低樣本比較明顯，完整微調時變小；但不是每個凍結任務都明顯，和 view-invariance 方法比也只是打平。
 - V-JEPA 的 ImageNet 77.9% 是用兩層 attentive probe 量的。[^vjepa-3]
 
 ## 相關頁面
@@ -39,3 +44,10 @@ V-JEPA 強調不調整模型參數、直接用凍結的骨幹網路。[^vjepa-1]
 [^vjepa-1]: [vjepa](../sources/vjepa.md) — "without adaption of the model’s parameters; e.g., using a frozen backbone."
 [^vjepa-2]: [vjepa](../sources/vjepa.md) — "downstream performance of the frozen backbones with an attentive probe"
 [^vjepa-3]: [vjepa](../sources/vjepa.md) — "77.9% using a two-layer attentive probe."
+[^ijepa-6]: [ijepa](../sources/ijepa.md) — "we see that I-JEPA significantly improves linear probing"
+[^ijepa-7]: [ijepa](../sources/ijepa.md) — "works best for each respective method. I-JEPA"
+[^ijepa-8]: [ijepa](../sources/ijepa.md) — "forms MAE while requiring less pretraining epochs when"
+[^ijepa-9]: [ijepa](../sources/ijepa.md) — "Table 15. Finetuning on the full ImageNet dataset. I-JEPA achieves competitive performance."
+[^vjepa-4]: [vjepa](../sources/vjepa.md) — "Table 1 Pixels vs. Featurized Targets. We ablate the effect of computing the prediction loss in feature space vs pixel space."
+[^vjepa-5]: [vjepa](../sources/vjepa.md) — "diction in both frozen evaluation of the video backbone,"
+[^ijepa-10]: [ijepa](../sources/ijepa.md) — "larger I-JEPA model matches the performance of view-invariance"

@@ -1,20 +1,22 @@
 # run-1 總結：每個節點出了什麼錯
 
+> **更正（run-3）**：獨立審查發現本檔原本有幾處和原始紀錄不符，下面已直接改成正確的值。原本寫的是：49 errors 分成 18／27／3／其他 1（照 `wiki-pass1.txt` 重數是 14／32／3／0）；6 個 subagent（實際 5 個，其中一個讀兩篇 Meta 部落格）；「人工」核對 19 個表格數字（實際是 AI 對照，`table-check.md` 列了 11 個不同的數字；19 是第 4 次檢查的警告行數）；語意檢查「只看」簡報和 Wiki（實際是 prompt 指示只讀這些，沒有技術上的隔離，而且指示它略過講者備註）。
+
 流程（run-1 版本）：取得資料 → 重點整理 → 討論 → 寫 Wiki → **Wiki 檢查** → 擬大綱 → 寫簡報 HTML → **簡報檢查** → **語意檢查** → **瀏覽檢查**
 
 | 節點 | 檢查方式 | 第一次結果 | 修到通過花了幾次 | 原始紀錄 |
 |---|---|---|---|---|
 | 取得資料 | 下載後核對標題 | 6 篇中 1 篇失敗（OpenReview 403 人機驗證） | 1（換成 Meta 2022 文章） | `wiki/log.md` |
-| 重點整理（6 個 subagent） | `check_takeaways.py` 逐句比對原文 | 85 句引文，0 句找不到 | 1 | `run-0/takeaways.txt` |
-| **寫 Wiki** | `check_wiki.py` | **49 errors**（未引用段落 18、數字不在引文 27、引文找不到 3、其他 1） | 4 次 | `wiki-pass1.txt` → `wiki-pass4.txt` |
-| 寫 Wiki（人工） | 表格數字對照原文表格 | 19 個數字都對，但 **1 個敘述錯誤**（表 7「同樣設定」，實際 epoch 500 vs 800） | 1 | `table-check.md` |
+| 重點整理（5 個 subagent 讀 6 篇） | `check_takeaways.py` 逐句比對原文 | 85 句引文，0 句找不到 | 1 | `run-0/takeaways.txt` |
+| **寫 Wiki** | `check_wiki.py` | **49 errors**（數字不在引文 32、未引用段落 14、引文找不到 3；另有 4 個警告） | 4 次 | `wiki-pass1.txt` → `wiki-pass4.txt` |
+| 寫 Wiki（AI 對照） | 表格數字對照原文表格 | 列出的 11 個數字都對，但 **1 個敘述錯誤**（表 7「同樣設定」，實際 epoch 500 vs 800） | 1 | `table-check.md` |
 | 擬大綱 | （run-1 沒有檢查） | — | — | `slides/outline.md` |
 | 寫簡報 HTML | `check_slides.py` | 1 error（式子的上下標被誤判成數字 22，屬於誤報） | 2 次 | `slides-pass1.txt`、`slides-pass2.txt` |
-| **寫簡報 HTML（語意）** | 獨立 subagent，只看簡報和被引用的 Wiki | **14 頁中 4 UNSUPPORTED、2 MISLEADING** | 第 2 次仍有 2 UNSUPPORTED、1 MISLEADING | `semantic-pass1.md`、`semantic-pass2.md` |
-| 瀏覽 | `check_browser.mjs`（1280×720 逐頁量測＋截圖） | 1 頁溢出（封面）；截圖另外看出背景色沒套用、架構圖把 predictor 畫成箭頭 | 2 次 | `browser-pass2.txt`、`browser-pass3.txt`、`shots/` |
+| **寫簡報 HTML（語意）** | 新開的 subagent，指示只讀簡報和被引用的 Wiki（不含講者備註） | **14 頁中 4 UNSUPPORTED、2 MISLEADING** | 第 2 次仍有 2 UNSUPPORTED、1 MISLEADING | `semantic-pass1.md`、`semantic-pass2.md` |
+| 瀏覽 | `check_browser.mjs`（1280×720 逐頁量測＋截圖） | 1 頁溢出（封面；第 1 次的輸出檔沒有留下）；截圖另外看出背景色沒套用、架構圖把 predictor 畫成箭頭 | 2 次 | `browser-pass2.txt`、`browser-pass3.txt`、`shots/` |
 
 ## 錯誤類型
-- **寫 Wiki 的錯誤最多，但大多是「格式／出處」問題**，確定性程式抓得到：
+- **寫 Wiki 的錯誤最多**，程式抓得到的大多是「格式／出處」問題（32 個數字錯誤裡，有一部分是條列編號和數學式的誤報）。**程式抓不到「引文存在、但支持不了那句話」，這要到 run-3 才發現**：
   - AI 自己加的解釋混在來源事實裡，沒標出來。
   - 單位換算：2 million → 200 萬。
   - 引文跨到 PDF 的雙欄排版。
@@ -34,5 +36,5 @@
    - 引用的 Wiki 頁有「注意」段落時，這欄必填。
    - 大綱裡的數字必須在引用頁裡找得到。
 2. **把格式檢查往前移到「每寫完一頁 Wiki」**：不要等全部寫完才跑，`CLAUDE.md` 的 ingest 步驟改成逐頁執行。
-3. 新規則：AI 補充要標「（AI 補充）」（Wiki 和簡報都要），表格數字要人工對照。run-1 中途已加入。
+3. 新規則：AI 補充要標「（AI 補充）」（Wiki 和簡報都要），表格數字要逐一對照原文。run-1 中途已加入。
 4. 語意檢查保留為最後一道關卡。

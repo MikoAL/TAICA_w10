@@ -10,7 +10,7 @@ I-JEPA 論文把 [self-supervised learning](self-supervised-learning.md) 的架�
 | 流派 | 做法 | 代表 |
 |---|---|---|
 | Joint-Embedding（聯合嵌入） | 相容的輸入給相似的嵌入，不相容的給不同的嵌入 [^ijepa-2] | VICReg 等 [^vicreg-1] |
-| Generative（生成式） | 用 decoder 直接**重建**訊號 y [^ijepa-3] | MAE [^ijepa-5] |
+| Generative（生成式） | 用 decoder 直接**重建**訊號 y [^ijepa-3] | MAE [^ijepa-7] |
 | JEPA | 用 predictor 預測訊號 y 的**嵌入** [^ijepa-4] | I-JEPA、V-JEPA |
 
 ## 生成式的問題
@@ -35,3 +35,4 @@ JEPA 像生成式一樣「從一部分預測另一部分」，但像聯合嵌入
 [^meta-ijepa-blog-1]: [meta-ijepa-blog](../sources/meta-ijepa-blog.md) — "the model tries to fill-in every bit of missing information, even though the world is inherently unpredictable"
 [^meta-ijepa-blog-2]: [meta-ijepa-blog](../sources/meta-ijepa-blog.md) — "it is notoriously difficult for generative models to generate human hands accurately"
 [^vicreg-1]: [vicreg](../sources/vicreg.md) — "Several recent approaches rely on a joint embedding architecture in which two networks are trained to produce similar embeddings for different views of the same image."
+[^ijepa-7]: [ijepa](../sources/ijepa.md) — "By reconstructing missing patches in pixels space, MAE"

@@ -1,0 +1,6 @@
+## 2026-11-23 16:27:02 old outline (HEAD 3691f33) against the new OUTLINE_CAVEAT_DEFERRED rule
+OUTLINE_CAVEAT_DEFERRED outline.md:row1 但書 deferred to another slide; write it on this slide or give a reason that stands alone
+OUTLINE_CAVEAT_DEFERRED outline.md:row3 但書 deferred to another slide; write it on this slide or give a reason that stands alone
+OUTLINE_CAVEAT_DEFERRED outline.md:row4 但書 deferred to another slide; write it on this slide or give a reason that stands alone
+OUTLINE_CAVEAT_DEFERRED outline.md:row9 但書 deferred to another slide; write it on this slide or give a reason that stands alone
+SUMMARY rows=16 errors=4 warnings=0

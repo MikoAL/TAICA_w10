@@ -12,16 +12,16 @@ sources: [jepa-anything]
 ## 問題
 預測模型通常是一個領域做一個。論文問：有沒有一個共同的學習原則，能在截然不同的系統上做 [world modeling](../concepts/world-model.md)？[^jepa-anything-2]
 
-論文對標準 [JEPA](../concepts/jepa.md) 的診斷：只有一個目標嵌入、一個 predictor 時，容易預測或變異大的結構會主導訓練，比較弱的結構會收到互相衝突的梯度。[^jepa-anything-3]
+論文對標準 [JEPA](../concepts/jepa.md) 的診斷：只有一個目標嵌入、一個 predictor 時，容易預測或變異大的結構**可能**主導訓練，比較弱的結構**可能**收到互相衝突的梯度。[^jepa-anything-3]
 
 ## 核心想法：正交預測分解（OPF）
 用學到的基底矩陣把目標狀態拆成多個成分，每個成分由專屬的分支來預測。[^jepa-anything-4] 這些成分互相**正交**，所以不重疊、能穩定地組回完整的狀態。[^jepa-anything-5] 詳見 [orthogonal predictive factorization](../concepts/orthogonal-predictive-factorization.md)。
 
 ## 論文報告的結果
-- 測試了七個領域：影像、生物、臨床、控制、分子動力學、物理場、天氣。[^jepa-anything-6]
+- 測試了七個領域：影像、生物、臨床、控制、分子動力學、物理場、天氣。[^jepa-anything-13]
 - 和條件相同的標準 JEPA 比，在 10 個動態預測任務上指標全部改善。[^jepa-anything-6]
 - Interventional Pong 單一介入的預測誤差降低 34.8%。[^jepa-anything-6]
-- 分子模擬：四個系統的一步誤差和 100 步誤差都最低。[^jepa-anything-7]
+- 分子模擬：四個系統的一步誤差和 100 步誤差，在論文比較的方法中都最低。[^jepa-anything-7][^jepa-anything-14]
 - 由因子提名的生物介入（藥物組合），後續濕實驗有支持的結果。[^jepa-anything-8]
 
 ## 注意
@@ -46,3 +46,5 @@ sources: [jepa-anything]
 [^jepa-anything-10]: [jepa-anything](jepa-anything.md) — "The corresponding reductions are 34.83%, 12.90%, and 8.58%, respectively."
 [^jepa-anything-11]: [jepa-anything](jepa-anything.md) — "Across three organoid specimens and three tumor-fragment specimens"
 [^jepa-anything-12]: [jepa-anything](jepa-anything.md) — "Orthogonal factors do not by themselves establish causal mechanisms, and a shared predictive architecture does not guarantee aligned representations across domains."
+[^jepa-anything-13]: [jepa-anything](jepa-anything.md) — "We evaluate JEPA -Anything across seven domains : vision, biology, clinical trajectories, control, molecular dynamics, physical fields, and weather."
+[^jepa-anything-14]: [jepa-anything](jepa-anything.md) — "It achieves the lowest one-step and 100-step molecular errors among compared methods in all four systems."

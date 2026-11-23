@@ -1,0 +1,2 @@
+## 2026-11-23 17:37:07 outline after semantic-check fixes
+SUMMARY rows=16 errors=0 warnings=0

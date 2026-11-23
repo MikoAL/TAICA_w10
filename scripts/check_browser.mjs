@@ -1,12 +1,12 @@
 // Browser check: open the deck at 1280x720, visit every slide, screenshot it, and report
 // content that overflows the slide or runs into the source footer, plus console errors.
-// Usage: node scripts/check_browser.mjs [url] [outDir]
+// Usage: node scripts/check_browser.mjs [url] [outDir]   (outDir defaults to logs/local, gitignored)
 import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const url = process.argv[2] || 'file://' + resolve('index.html');
-const outDir = process.argv[3] || 'logs/run-1';
+const outDir = process.argv[3] || 'logs/local';
 const shots = `${outDir}/shots`;
 mkdirSync(shots, { recursive: true });
 

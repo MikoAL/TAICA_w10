@@ -10,28 +10,28 @@ JEPA 從訊號 x 的嵌入，預測相容訊號 y 的**嵌入**，而不是預�
 
 ## 三個零件
 - **Context encoder**：把看得到的部分 x 編碼成表示。I-JEPA 用 ViT，只處理看得到的區塊。[^meta-ijepa-blog-1]
-- **Target encoder**：把被遮住的部分 y 編碼成「答案」表示。它是 context encoder 的指數移動平均（EMA）。[^ijepa-2]
+- **Target encoder**：產生「答案」表示。輸入不遮，遮的是它的**輸出**：從輸出裡取出 y 區域的表示。[^ijepa-4] 它的權重是 context encoder 的指數移動平均（EMA）。[^ijepa-2][^ijepa-5]
 - **Predictor**：從 x 的表示，預測 y 的表示。[^ijepa-1]
 
-訓練目標：預測出的表示和目標表示之間的平均 L2 距離越小越好。[^ijepa-3]
+I-JEPA 的訓練目標：預測出的表示和目標表示之間的平均 L2 距離越小越好。[^ijepa-3]
 
-$$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2^2$$
+$$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\sum_{j \in B_i}\lVert \hat{s}_{y_j} - s_{y_j} \rVert_2^2$$
 
-（白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。）[^ijepa-3]
+（白話：M 塊目標區域，每塊把塊內每個 patch「預測的表示」和「真正的表示」的差加起來，再對 M 塊取平均。）[^ijepa-3]
 
 ## 為什麼不預測像素
-世界很多細節本來就無法預測，生成式模型卻要補完每一個細節。[^meta-ijepa-blog-2] JEPA 在抽象表示裡比較，可以忽略不重要的細節。[^meta-ijepa-blog-3] 實驗證據見 [像素 vs 表示](pixel-vs-feature-prediction.md)。
+世界很多細節本來就無法預測，生成式模型卻要補完每一個細節。[^meta-ijepa-blog-2] JEPA 在抽象表示裡比較，可以忽略不重要的細節。[^meta-ijepa-blog-3][^meta-lecun-blog-3] 實驗證據見 [像素 vs 表示](pixel-vs-feature-prediction.md)。
 
 ## 演進
 | 年份 | 名稱 | 重點 |
 |---|---|---|
-| 2022 | LeCun 構想 | JEPA 是 world model 的核心，可以一層疊一層 [^meta-lecun-blog-1] |
+| 2022 | LeCun 構想 | JEPA 是 world model 難題解法的一個關鍵元素，可以一層疊一層 [^meta-lecun-blog-2][^meta-lecun-blog-1] |
 | 2023 | [I-JEPA](../sources/ijepa.md) | 第一個實作，用在圖片 [^meta-ijepa-blog-4] |
 | 2024 | [V-JEPA](../sources/vjepa.md) | 延伸到影片，只用特徵預測 [^vjepa-1] |
-| 2026 | [JEPA-Anything](../sources/jepa-anything.md) | 論文報告：把目標拆成正交因子，用在七個領域 [^jepa-anything-1] |
+| 2026 | [JEPA-Anything](../sources/jepa-anything.md) | 論文報告：把目標拆成正交因子，用在七個領域 [^jepa-anything-1][^jepa-anything-2][^jepa-anything-3] |
 
 ## 難點
-預測表示有一個偷懶解：encoder 不管輸入都輸出同一個東西。這叫 [collapse](collapse.md)。[^vjepa-2]
+預測表示有一個偷懶解：encoder 不管輸入都輸出同一個東西。這叫 [collapse](collapse.md)。[^vjepa-2][^vjepa-3]
 
 ## 相關頁面
 - [生成式 vs 聯合嵌入](generative-vs-joint-embedding.md)、[collapse](collapse.md)、[masking strategy](masking-strategy.md)、[world model](world-model.md)、[orthogonal predictive factorization](orthogonal-predictive-factorization.md)
@@ -48,3 +48,10 @@ $$\text{loss} = \frac{1}{M}\sum_{i=1}^{M}\lVert \hat{s}_{y_i} - s_{y_i} \rVert_2
 [^vjepa-1]: [vjepa](../sources/vjepa.md) — "introduces V-JEPA, a collection of vision models trained solely using a feature prediction objective"
 [^vjepa-2]: [vjepa](../sources/vjepa.md) — "would admit a trivial solution, where the encoder"
 [^jepa-anything-1]: [jepa-anything](../sources/jepa-anything.md) — "We evaluate JEPA -Anything across seven domains"
+[^ijepa-4]: [ijepa](../sources/ijepa.md) — "the target blocks are obtained by masking the output of the target-encoder, not the input"
+[^ijepa-5]: [ijepa](../sources/ijepa.md) — "are updated at each iteration via an exponential moving average of"
+[^meta-lecun-blog-2]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "One key element of a solution is the Joint Embedding Predictive Architecture (JEPA)."
+[^meta-lecun-blog-3]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "it naturally produces informative abstract representations of the input that eliminate irrelevant details"
+[^vjepa-3]: [vjepa](../sources/vjepa.md) — "puts a constant representation, regardless of its input."
+[^jepa-anything-2]: [jepa-anything](../sources/jepa-anything.md) — "decomposes latent targets into complementary factors"
+[^jepa-anything-3]: [jepa-anything](../sources/jepa-anything.md) — "a domain-agnostic framework based on orthogonal predictive factorization (OPF)"

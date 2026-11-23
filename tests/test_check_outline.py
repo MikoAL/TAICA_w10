@@ -80,6 +80,28 @@ class TestCheckOutline(unittest.TestCase):
         rows = "| 1 | 證據 | 證據 | 66.9 vs 40.7 | 無：下一頁專講 | `sources/ijepa.md#結果` |\n"
         self.assertEqual(self.codes(rows), [])
 
+    def test_deferred_caveat_is_error(self):
+        # run-2: a waiver that pushes the caveat to another slide must not pass
+        rows = ("| 1 | 證據 | 證據 | 66.9 vs 40.7 | 無：I-JEPA 頁的「注意」放在「JEPA 輸在哪裡」頁 "
+                "| `sources/ijepa.md#結果`、`#注意` |\n")
+        self.assertIn("OUTLINE_CAVEAT_DEFERRED", self.codes(rows))
+
+    def test_deferred_caveat_variants(self):
+        for cell in ("無：移到別頁", "無：但書放到別頁"):
+            with self.subTest(cell=cell):
+                rows = f"| 1 | 證據 | 證據 | 66.9 vs 40.7 | {cell} | `sources/ijepa.md#結果`、`#注意` |\n"
+                self.assertIn("OUTLINE_CAVEAT_DEFERRED", self.codes(rows))
+
+    def test_waiver_with_real_reason_ok(self):
+        rows = ("| 1 | 證據 | 證據 | 66.9 vs 40.7 | 無：只用方法定義，沒有用到這頁的結果 "
+                "| `sources/ijepa.md#結果`、`#注意` |\n")
+        self.assertEqual(self.codes(rows), [])
+
+    def test_deferred_wording_without_caveat_page_ok(self):
+        # no 注意 heading on the cited page, so the deferred wording is harmless here
+        rows = "| 1 | 零件 | 概念 | 三個零件 | 無：但書放在別頁 | `concepts/jepa.md#三個零件` |\n"
+        self.assertEqual(self.codes(rows), [])
+
     def test_missing_table_is_error(self):
         self.outline.write_text("# 大綱\n\n沒有表格。\n", encoding="utf-8")
         codes = [i.code for i in check_outline(self.outline, self.wiki) if i.severity == "error"]

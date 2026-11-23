@@ -10,7 +10,7 @@ sources: [vicreg, vjepa, ijepa, meta-lecun-blog]
 
 （AI 補充）這樣兩個表示永遠一模一樣，「讓它們接近」的 loss 永遠是零，模型什麼都沒學到。
 
-V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
+V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1][^vjepa-4]
 
 用能量的說法：能量地形變得完全平坦。[^ijepa-1]
 
@@ -21,8 +21,9 @@ V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
 ## 怎麼防
 | 方法 | 直覺 | 誰用 |
 |---|---|---|
-| Contrastive（對比） | 把不同樣本的表示推開；LeCun 說以前只能這樣做 [^meta-lecun-blog-1] | SimCLR |
-| EMA target encoder + stop-gradient | 答案由一個緩慢更新的 encoder 給，不讓梯度流回去 [^vjepa-2] | I-JEPA、V-JEPA |
+| Contrastive（對比） | 把不同樣本的表示推開；Meta 2022 文章說以前只能這樣做 [^meta-lecun-blog-1][^vicreg-6] | SimCLR [^vicreg-7] |
+| 不對稱架構（target encoder 用 EMA） | x 和 y 的 encoder 不對稱；[^ijepa-4][^ijepa-5] 答案由 target encoder 給，它的權重是 context encoder 的 EMA [^ijepa-2][^ijepa-3] | I-JEPA（論文沒有說自己用 stop-gradient） |
+| EMA + stop-gradient + predictor | 答案由 EMA 的 encoder 給，並且明寫不讓梯度流回答案那一邊 [^vjepa-2][^vjepa-3] | V-JEPA |
 | Variance + Covariance 正則化 | 強迫一批樣本彼此不同、各維度不重複 [^vicreg-3] | VICReg |
 
 - VICReg 的消融：拿掉 variance 項，表示立刻崩塌；covariance 項救不了。[^vicreg-4]
@@ -41,3 +42,11 @@ V-JEPA 也明說，單純的特徵預測有這個偷懶解。[^vjepa-1]
 [^vjepa-2]: [vjepa](../sources/vjepa.md) — "along with a stop-gradient and a predictor has"
 [^ijepa-1]: [ijepa](../sources/ijepa.md) — "wherein the energy landscape is flat"
 [^meta-lecun-blog-1]: [meta-lecun-blog](../sources/meta-lecun-blog.md) — "Until recently, the only approach would have been to use contrastive methods"
+[^vicreg-6]: [vicreg](../sources/vicreg.md) — "other samples and their distortions are pushed away"
+[^vicreg-7]: [vicreg](../sources/vicreg.md) — "given by the current batch of data as in SimCLR"
+[^ijepa-2]: [ijepa](../sources/ijepa.md) — "The use of an exponential moving average target-encoder"
+[^ijepa-3]: [ijepa](../sources/ijepa.md) — "are updated at each iteration via an exponential moving average of"
+[^vjepa-3]: [vjepa](../sources/vjepa.md) — "does not backpropagate through its argument"
+[^vjepa-4]: [vjepa](../sources/vjepa.md) — "puts a constant representation, regardless of its input."
+[^ijepa-4]: [ijepa](../sources/ijepa.md) — "JEPAs; we leverage an asymmetric architecture between the"
+[^ijepa-5]: [ijepa](../sources/ijepa.md) — "x- and y-encoders to avoid representation collapse."

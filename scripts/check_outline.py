@@ -16,6 +16,7 @@ REPO = Path(__file__).resolve().parent.parent
 REQUIRED = {"要點", "但書", "引用 Wiki"}
 BACKTICK = re.compile(r"`([^`]+)`")
 EMPTY_CAVEATS = {"", "—", "-", "–"}
+DEFERRED = re.compile(r"^無.*(放在|放到|移到|留到|別頁|另一頁|其他頁)")
 
 
 def _cells(line):
@@ -100,6 +101,9 @@ def check_outline(outline_path: Path, wiki_dir: Path) -> list[Issue]:
         if has_caveat and row.get("但書", "") in EMPTY_CAVEATS:
             out.append(Issue("OUTLINE_CAVEAT_MISSING", "error", name, line,
                              "cited page has a 注意 caveat; fill 但書 or waive with 無：reason"))
+        if has_caveat and DEFERRED.match(row.get("但書", "")):
+            out.append(Issue("OUTLINE_CAVEAT_DEFERRED", "error", name, line,
+                             "但書 deferred to another slide; write it on this slide or give a reason that stands alone"))
     return out
 
 

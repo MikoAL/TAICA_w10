@@ -139,13 +139,13 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
       <p>需要上百萬、上十億筆標註資料，還要在虛擬環境試上百萬次。</p>
     </div>
     <div>
-      <h3>LeCun 主張的關鍵：world model</h3>
+      <h3>LeCun 提出的「可能關鍵」：world model</h3>
       <p>機器內部對「世界怎麼運作」的模型。有了它，機器可以：</p>
       <ul>
         <li>補上感官沒提供的資訊</li>
         <li>預測接下來合理的狀態</li>
       </ul>
-      <p class="muted small">LeCun 認為：差別在於人類靠觀察累積了大量背景知識，也就是常識。</p>
+      <p class="muted small">LeCun 的假說：人靠觀察累積的大量背景知識，可能就是常識的基礎。</p>
     </div>
   </div>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#為什麼需要">Wiki › world model</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/meta-lecun-blog.md#摘要">Wiki › Meta LeCun 構想文</a></footer>
@@ -169,30 +169,32 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 </section>
 
 <!-- 3 三大流派 -->
-<section data-wiki="concepts/generative-vs-joint-embedding.md#自監督的三大流派生成式聯合嵌入jepa,concepts/generative-vs-joint-embedding.md#生成式的問題,concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/pixel-vs-feature-prediction.md#生成式預測像素">
-  <h2>三種「猜」法</h2>
+<section data-wiki="concepts/generative-vs-joint-embedding.md#自監督的三大流派生成式聯合嵌入jepa,concepts/generative-vs-joint-embedding.md#生成式的問題,concepts/generative-vs-joint-embedding.md#聯合嵌入的問題,concepts/generative-vs-joint-embedding.md#jepa-站在哪裡,concepts/pixel-vs-feature-prediction.md#生成式預測像素,concepts/self-supervised-learning.md#是什麼">
+  <h2>自監督的三種流派</h2>
+  <div class="ai-note">「表示」（也叫嵌入 embedding）：模型把一張圖轉成的一串數字。意思相近的圖，這串數字也應該相近。</div>
   <table class="plain">
     <tr><th>流派</th><th>做法</th><th>在哪裡比較</th><th>代表</th></tr>
     <tr><td>聯合嵌入 <span class="en">Joint-Embedding</span></td><td>相容的輸入給相似的嵌入</td><td>嵌入</td><td>VICReg</td></tr>
-    <tr><td>生成式 <span class="en">Generative</span></td><td>用 decoder 直接<strong>重建</strong> y</td><td>像素</td><td>MAE</td></tr>
+    <tr><td>生成式 <span class="en">Generative</span></td><td>用 decoder 直接<strong>重建</strong>另一個訊號 y</td><td>像素</td><td>MAE</td></tr>
     <tr><td><strong>JEPA</strong></td><td>用 predictor 預測 y 的<strong>嵌入</strong></td><td>嵌入</td><td>I-JEPA、V-JEPA</td></tr>
   </table>
-  <p style="margin-top:22px"><strong>生成式的問題：</strong>它想補完每一個缺少的細節，但世界本來就無法完全預測。Meta 舉的例子：生成式模型很難把人手畫對。</p>
+  <p style="margin-top:14px"><strong>Meta 對生成式的批評：</strong>它想補完每一個缺少的細節，但世界本來就無法完全預測；例如很難把人手畫對。</p>
+  <p><strong>聯合嵌入的問題：</strong>常要對同一張圖做不同視角（資料增強），還有 collapse 的風險。</p>
   <p><strong>JEPA 的位置：</strong>像生成式一樣「從一部分預測另一部分」，但像聯合嵌入一樣在嵌入空間比較。</p>
-  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md#生成式預測像素">Wiki › 像素 vs 表示</a></footer>
+  <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md#生成式預測像素">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/self-supervised-learning.md#是什麼">Wiki › self-supervised learning</a></footer>
   <aside class="notes">這頁是定位圖。記住一句：JEPA = 生成式的「預測」+ 聯合嵌入的「在嵌入空間比」。</aside>
 </section>
 
 <!-- 4 JEPA 三零件 -->
 <section data-wiki="concepts/jepa.md#三個零件,concepts/jepa.md#一句話,concepts/collapse.md#怎麼防,sources/ijepa.md#方法">
-  <h2>JEPA 的三個零件</h2>
+  <h2>JEPA 的三個零件（以 I-JEPA 為例）</h2>
   <div class="arch" aria-label="JEPA 架構圖">
     <div class="box in-x">x 看得到的部分</div><div class="arrow">→</div><div class="box">Context encoder</div><div class="arrow">→</div><div class="box pred">Predictor<br><span class="small muted">猜 y 的表示</span></div><div class="arrow">↘</div><div class="box loss">比較兩個表示<br>（L2 距離）</div>
     <div class="box in-y">圖片（輸入不遮）</div><div class="arrow">→</div><div class="box">Target encoder<br><span class="small muted">context encoder 的 EMA</span></div><div class="arrow">→</div><div class="rep">取出 y 區域的表示<br><span class="small muted">遮的是輸出</span></div><div class="arrow">↗</div>
   </div>
-  <p class="formula">loss = <sup>1</sup>⁄<sub>M</sub> Σ<sub>i</sub> ‖ ŝ<sub>y<sub>i</sub></sub> − s<sub>y<sub>i</sub></sub> ‖₂²</p>
-  <p>白話：M 塊目標區域，每塊「預測的表示」和「真正的表示」差多少，取平均。</p>
-  <p class="muted small">EMA（指數移動平均）：target encoder 由 context encoder 緩慢更新而來，用來防止下一頁的 collapse。</p>
+  <p class="formula"><span class="small muted">I-JEPA：</span>loss = <sup>1</sup>⁄<sub>M</sub> Σ<sub>i</sub> Σ<sub>j∈B<sub>i</sub></sub> ‖ ŝ<sub>y<sub>j</sub></sub> − s<sub>y<sub>j</sub></sub> ‖₂²</p>
+  <p>白話：M 塊目標區域，每塊把塊內每個 patch「預測的表示」和「真正的表示」的差加起來，再對 M 塊取平均。</p>
+  <p class="muted small">EMA（指數移動平均）：target encoder 的權重是 context encoder 權重的 EMA。兩個 encoder 不對稱，用來避免下一頁的 collapse。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md#三個零件">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md#怎麼防">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#方法">Wiki › I-JEPA 論文</a></footer>
   <aside class="notes">整份簡報唯一的式子。強調：比較發生在右邊的「表示」，不是像素。</aside>
 </section>
@@ -210,12 +212,13 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
       <table class="plain">
         <tr><th>防法</th><th>誰用</th></tr>
         <tr><td>Contrastive：把不同樣本推開</td><td>SimCLR</td></tr>
-        <tr><td>EMA target encoder + stop-gradient</td><td>I-JEPA、V-JEPA</td></tr>
+        <tr><td>不對稱架構（target encoder 用 EMA）</td><td>I-JEPA</td></tr>
+        <tr><td>EMA + stop-gradient + predictor</td><td>V-JEPA</td></tr>
         <tr><td>Variance + Covariance 正則化</td><td>VICReg</td></tr>
       </table>
     </div>
   </div>
-  <p>VICReg 的實驗：拿掉 variance 項，表示<strong>立刻</strong>崩塌。EMA 這類技巧為什麼有效，VICReg 論文說還不完全清楚。</p>
+  <p style="margin-top:20px">VICReg 的實驗：拿掉 variance 項，表示<strong>立刻</strong>崩塌。EMA 這類技巧為什麼有效，VICReg 論文說還不完全清楚。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a></footer>
   <aside class="notes">問同學：如果你是模型、只被要求「兩個輸出要一樣」，最省力的做法是什麼？答案就是 collapse。</aside>
 </section>
@@ -224,12 +227,12 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 <section data-wiki="sources/vicreg.md#三個項只講直覺,sources/vicreg.md#重點,sources/vicreg.md#注意">
   <h2>防 collapse 的一種做法：VICReg 的三個項</h2>
   <table class="plain">
-    <tr><th>項</th><th>要求</th><th>擋住什麼</th></tr>
-    <tr><td>Invariance（不變）</td><td>同一張圖的兩個視角，嵌入要接近</td><td>這是原本的目標，單獨用就會 collapse</td></tr>
-    <tr><td>Variance（變異）</td><td>同一批資料裡，不同樣本的嵌入必須不一樣</td><td>所有樣本變成同一個向量</td></tr>
-    <tr><td>Covariance（共變異）</td><td>嵌入的各個維度不要互相重複</td><td>資訊上的 collapse</td></tr>
+    <tr><th>項</th><th>要求</th><th>說明</th></tr>
+    <tr><td>Invariance（不變）</td><td>同一張圖的兩個視角，嵌入要接近</td><td>單獨用就會 collapse</td></tr>
+    <tr><td>Variance（變異）</td><td>同一批資料裡，不同樣本的嵌入必須不一樣</td><td>拿掉它，表示立刻變成同一個向量</td></tr>
+    <tr><td>Covariance（共變異）</td><td>嵌入的各個維度不要互相重複</td><td>防止資訊上的 collapse</td></tr>
   </table>
-  <p style="margin-top:20px">實驗：拿掉 variance 項，表示<strong>立刻</strong>崩塌成同一個向量，covariance 項救不了。</p>
+  <p style="margin-top:20px">實驗：少了 variance 項，covariance 項也救不了。</p>
   <p class="muted">VICReg 的主要賣點是<strong>可解釋、模組化</strong>，不是準確度大勝：ImageNet 上和 Barlow Twins 打平（表 1），而且不需要 SimCLR 那種負樣本。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vicreg.md#三個項只講直覺">Wiki › VICReg 論文</a></footer>
   <aside class="notes">run-2 新增的頁。只講直覺，不放公式。和上一頁的 EMA 做法對照：VICReg 用明確的限制，EMA 為什麼有效則還不完全清楚。</aside>
@@ -245,7 +248,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
         <li>target 要夠大（語意層級），context 要資訊夠多、分布夠廣</li>
         <li>不需要人工設計的資料增強</li>
       </ul>
-      <p class="muted small">但書：只在圖片上驗證；消融實驗多用 ViT-B/16 和 1% 標註。</p>
+      <p class="muted small">但書：下面這組消融（表 6）只用 ViT-B/16 和 1% 標註。</p>
       <h3 style="margin-top:18px">遮法很重要（只用 1% 標註，表 6）</h3>
       <div class="bars">
         <div class="bar">multi-block<span class="rep" style="width:100%">54.2</span></div>
@@ -254,7 +257,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
     </div>
     <div>
       <div class="patches" id="ijepa-grid" aria-label="multi-block 遮罩示意"></div>
-      <p class="legend"><b style="background:var(--context)"></b>context　<b style="background:var(--target)"></b>targets　<b style="background:#dfe4e9"></b>沒用到</p>
+      <p class="legend"><b style="background:var(--context)"></b>context　<b style="background:var(--target)"></b>targets　<b style="background:#dfe4e9"></b>沒用到（示意）</p>
     </div>
   </div>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#方法">Wiki › I-JEPA 論文</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/masking-strategy.md">Wiki › masking strategy</a></footer>
@@ -264,7 +267,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
 <!-- 7 證據 -->
 <section data-wiki="concepts/pixel-vs-feature-prediction.md#證據,concepts/pixel-vs-feature-prediction.md#注意,sources/ijepa.md#結果">
   <h2>預測表示真的比較好？</h2>
-  <h3>I-JEPA 表 7：只用 1% 標註做線性評估</h3>
+  <h3>I-JEPA 表 7：只用 1% 標註做線性評估<span class="small muted">（評估方式見後面「怎麼看這些數字」）</span></h3>
   <div class="bars">
     <div class="bar">預測表示<span class="rep" style="width:100%">66.9（訓練 500 epoch）</span></div>
     <div class="bar">預測像素<span class="pix" style="width:61%">40.7（800 epoch）</span></div>
@@ -272,15 +275,15 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <p>像素版本<strong>訓練得更久</strong>，分數仍然低很多。</p>
   <ul>
     <li><strong>V-JEPA</strong>：在特徵空間預測，比在像素空間預測有一致的進步。</li>
-    <li><strong>效率</strong>：ViT-Huge 用 16 張 A100、不到 72 小時；比 MAE 少約 5 倍的迭代就收斂。</li>
+    <li><strong>I-JEPA 的訓練成本</strong>（不是表示 vs 像素的比較）：ViT-Huge 用 16 張 A100、不到 72 小時；比 MAE 少約 5 倍的迭代就收斂。</li>
   </ul>
-  <p class="muted"><strong>但書：</strong>表 7 只是一組消融實驗；V-JEPA 完整微調時，兩者差距很小（85.4 vs 85.6），優勢主要在凍結評估。</p>
+  <p class="muted"><strong>但書：</strong>表 7 只是一組消融實驗；V-JEPA 完整微調時兩者差距很小（像素 85.4、特徵 85.6）；凍結評估時 K400 差距較大，SSv2 幾乎沒差（66.0 vs 66.2）。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md#證據">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md#結果">Wiki › I-JEPA 論文</a></footer>
-  <aside class="notes">這頁的 epoch 數是 Wiki 人工核對表格時修正過的：原本寫「同樣設定」，其實是 500 vs 800。</aside>
+  <aside class="notes">這頁的 epoch 數是 AI 對照原文表格時修正過的：原本寫「同樣設定」，其實是 500 vs 800。</aside>
 </section>
 
 <!-- 8 V-JEPA -->
-<section data-wiki="sources/vjepa.md#一句話,sources/vjepa.md#結果">
+<section data-wiki="sources/vjepa.md#一句話,sources/vjepa.md#結果,sources/vjepa.md#注意">
   <h2>從圖片到影片：V-JEPA（2024）</h2>
   <p class="lead">只用「特徵預測」訓練：不重建像素、不用文字、不用負樣本。</p>
   <div class="cols">
@@ -288,18 +291,19 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
       <ul>
         <li>訓練資料：約 2 million 支公開影片</li>
         <li>最大模型 ViT-H/16（只看影片）：Kinetics-400 81.9%、SSv2 72.2%</li>
-        <li>需要理解<strong>動作</strong>的任務特別強：SSv2 +21 分</li>
+        <li>和<strong>影像模型</strong>比（凍結評估），需要理解動作的任務進步明顯：SSv2 +21 分</li>
       </ul>
     </div>
     <div>
       <ul>
-        <li>預訓練看的樣本明顯比較少</li>
+        <li>和預測像素的方法比，預訓練看的樣本明顯比較少</li>
         <li>標註變少時，掉得比其他模型少（label-efficient）</li>
       </ul>
     </div>
   </div>
+  <p class="muted"><strong>但書：</strong>看靜態外觀的任務只是縮小和影像模型的差距；用 ViT-L 比（凍結評估）時，ImageNet 略輸 OmniMAE（74.8% 對 75.1%，OmniMAE 直接用 ImageNet 訓練；更大的 ViT-H/16 是 77.9%）；完整微調時，預測特徵和預測像素差距很小。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md#結果">Wiki › V-JEPA 論文</a></footer>
-  <aside class="notes">Kinetics-400 靠看物體就能答，SSv2 要看動作順序，所以 V-JEPA 在 SSv2 的進步更有意義。</aside>
+  <aside class="notes">先問「和誰比」：+21 是和影像模型比，樣本少是和預測像素的方法比。</aside>
 </section>
 
 <!-- 9 怎麼看數字 -->
@@ -312,9 +316,14 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
     <tr><td>微調 fine-tuning</td><td>整個模型用標註資料再訓練</td></tr>
     <tr><td>低樣本 low-shot</td><td>只用 1% 的 ImageNet 標註，大約每類 12 或 13 張圖</td></tr>
   </table>
-  <p style="margin-top:20px">JEPA 的優勢主要出現在<strong>凍結評估</strong>和<strong>低樣本</strong>；完整微調時優勢變小。</p>
+  <ul style="margin-top:16px">
+    <li>凍結、低樣本：I-JEPA 贏過同樣不靠資料增強的 MAE；完整微調：I-JEPA 87.1、MAE 87.8，略輸</li>
+    <li>V-JEPA 表 1（特徵 vs 像素，凍結）：K400 73.7 vs 68.6，但 SSv2 66.2 vs 66.0，幾乎沒差</li>
+    <li>和 view-invariance 方法比（ImageNet linear probe）：I-JEPA 大模型才打平，不是大幅領先</li>
+  </ul>
+  <div class="ai-note">合起來看：和 MAE、預測像素的做法比，JEPA 的優勢在凍結評估和低樣本比較明顯，微調時變小；不是每個凍結任務都明顯。</div>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
-  <aside class="notes">看到論文數字先問：這是哪一種評估？下一頁會看到，換一種評估，JEPA 就不一定贏。</aside>
+  <aside class="notes">看到論文數字先問：這是哪一種評估？後面「JEPA 輸在哪裡」會看到，換一種評估，JEPA 就不一定贏。</aside>
 </section>
 
 <!-- 10 JEPA-Anything -->
@@ -324,7 +333,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <div class="cols">
     <div>
       <h3>問題</h3>
-      <p>標準 JEPA 只有一個目標、一個 predictor。論文認為這樣容易預測的結構會主導訓練。</p>
+      <p>標準 JEPA 只有一個目標、一個 predictor。論文認為這樣容易預測的結構可能主導訓練。</p>
       <h3>想法：正交預測分解</h3>
       <ol>
         <li><strong>拆</strong>：把目標狀態拆成幾個因子</li>
@@ -333,19 +342,19 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
       </ol>
     </div>
     <div>
-      <div class="whole" aria-hidden="true"></div>
       <div class="split" aria-hidden="true"><div style="background:var(--context)"></div><div style="background:#6f9e8c"></div><div style="background:#b9a052"></div><div style="background:var(--target)"></div></div>
-      <p class="legend">一個目標 → 拆成互相正交的因子</p>
-      <h3 style="margin-top:16px">論文報告</h3>
+      <p class="legend">示意：表示拆成正交因子（不是切圖，也不是固定四個）</p>
+      <h3 style="margin-top:6px">論文報告</h3>
       <ul>
         <li>測試七個領域：影像、生物、臨床、控制、分子、物理場、天氣</li>
-        <li>和條件相同的標準 JEPA 比：Interventional Pong 單一介入誤差降低 34.8%，但同時介入多個變數時只降低 12.90%</li>
-        <li>也有輸的地方：Hopper 規劃任務是標準 JEPA 比較好</li>
+        <li>比條件相同的標準 JEPA：Interventional Pong 單一介入誤差降 34.8%，同時介入多個變數時降 12.90%</li>
+        <li>輸的地方：Hopper 規劃是標準 JEPA 較好</li>
+        <li>作者提醒：正交因子不代表因果機制；生物證據樣本小</li>
       </ul>
     </div>
   </div>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/orthogonal-predictive-factorization.md">Wiki › 正交預測分解</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything 論文</a></footer>
-  <aside class="notes">只講概念，不講 pseudoinverse。重點是「拆開分頭預測」這個直覺。</aside>
+  <aside class="notes">只講概念。重點是「拆開分頭預測」這個直覺。</aside>
 </section>
 
 <!-- 11 JEPA 輸在哪裡 -->
@@ -354,7 +363,7 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <table class="plain">
     <tr><th>情境</th><th>結果</th></tr>
     <tr><td>I-JEPA 完整微調</td><td>I-JEPA 87.1 vs MAE 87.8，略輸（但訓練 epoch 少 5.3 倍）</td></tr>
-    <tr><td>V-JEPA 做 ImageNet（看外觀即可）</td><td>V-JEPA 74.8% vs OmniMAE 75.1%</td></tr>
+    <tr><td>V-JEPA ViT-L 做 ImageNet（凍結評估）</td><td>V-JEPA 74.8% vs OmniMAE 75.1%（OmniMAE 直接用 ImageNet 訓練）</td></tr>
     <tr><td>JEPA-Anything 的 Hopper 規劃</td><td>標準 JEPA 比較好，論文自己說「看環境而定」</td></tr>
   </table>
   <h3 style="margin-top:22px">讀論文時要小心的說法</h3>
@@ -372,15 +381,15 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <div class="modules">
     <div><b>Configurator</b>總指揮，依任務設定其他模組</div>
     <div><b>Perception</b>從感測器估計目前狀態</div>
-    <div class="core"><b>World model</b>補資訊、預測未來；核心就是 JEPA</div>
+    <div class="core"><b>World model</b>補資訊、預測未來。難題是表示多種合理的預測，JEPA 是解法的「一個關鍵元素」</div>
     <div><b>Cost</b>算出「不舒服程度」</div>
     <div><b>Actor</b>找讓未來成本最低的行動</div>
     <div><b>Short-term memory</b>記住狀態和成本</div>
   </div>
-  <p style="margin-top:22px">Meta 把 I-JEPA 的 predictor 稱為一個「原始、受限的 world model」。</p>
-  <p class="muted">這仍是研究方向：Meta 自己說，訓練 world model 是未來幾十年 AI 的主要挑戰。</p>
+  <p style="margin-top:22px">Meta 說 I-JEPA 的 predictor 可以看成一個「原始、受限的 world model」。</p>
+  <p class="muted">這仍是研究方向：原文說「可以說」（it could be argued）訓練 world model 是未來幾十年 AI 的主要挑戰。</p>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/world-model.md#lecun-的六模組架構一頁帶過">Wiki › world model</a></footer>
-  <aside class="notes">一頁帶過六個模組，重點是中間那格：JEPA 是 world model 的候選做法。</aside>
+  <aside class="notes">一頁帶過六個模組，重點是 World model 那格：JEPA 是「表示多種合理預測」這個難題解法的一個關鍵元素，不等於整個 world model。</aside>
 </section>
 
 <!-- 13 總結 -->
@@ -388,8 +397,8 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
   <h2>帶走四句話</h2>
   <ol class="lead">
     <li>JEPA 從 x 的表示預測 y 的<strong>表示</strong>，不預測像素。</li>
-    <li>在抽象表示裡比較，可以忽略不重要的細節。I-JEPA 的消融實驗裡，預測表示 66.9、預測像素 40.7。</li>
-    <li>難點是 collapse，靠 EMA target encoder、stop-gradient 或 VICReg 的正則化來防。</li>
+    <li>在抽象表示裡比較，可以忽略不重要的細節。I-JEPA 的一組消融（1% 標註，epoch 500 vs 800）：預測表示 66.9、預測像素 40.7。</li>
+    <li>難點是 collapse：I-JEPA 靠不對稱架構（EMA target encoder），V-JEPA 用 EMA、stop-gradient 和 predictor。</li>
     <li>它不是全面勝出：微調、看外觀的任務、部分控制任務仍可能輸。</li>
   </ol>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/jepa.md">Wiki › JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/ijepa.md">Wiki › I-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/vjepa.md">Wiki › V-JEPA</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/sources/jepa-anything.md">Wiki › JEPA-Anything</a></footer>
@@ -402,9 +411,9 @@ table.plain th { font-weight: 700; color: var(--muted); font-size: 19px; }
     <li>JEPA 和 MAE 這類生成式方法，loss 算在哪裡不一樣？
       <span class="answer fragment">JEPA 算在嵌入空間，MAE 算在像素（輸入）空間。</span></li>
     <li>如果 encoder 不管輸入都輸出同一個向量，會發生什麼事？I-JEPA 用什麼防止？
-      <span class="answer fragment">Collapse。I-JEPA、V-JEPA 用 EMA target encoder 加 stop-gradient 來防止。</span></li>
+      <span class="answer fragment">Collapse。I-JEPA 用不對稱架構（target encoder 是 context encoder 的 EMA）；V-JEPA 用 EMA、stop-gradient 和 predictor。</span></li>
     <li>有人說「JEPA 比 MAE 好」，你應該先問什麼？
-      <span class="answer fragment">用哪一種評估？JEPA 的優勢主要在凍結評估和低樣本，完整微調時 I-JEPA 甚至略輸 MAE。</span></li>
+      <span class="answer fragment">用哪一種評估、跟哪個 MAE 比？I-JEPA 在 linear probe 贏過同樣不靠資料增強的 MAE，低樣本贏過架構相近的 MAE；完整微調 87.1，略輸 MAE 的 87.8。和 view-invariance 方法比（ImageNet linear probe），大模型才打平。</span></li>
   </ol>
   <footer class="src">來源：<a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/generative-vs-joint-embedding.md">Wiki › 三大流派</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/pixel-vs-feature-prediction.md">Wiki › 像素 vs 表示</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/collapse.md">Wiki › collapse</a><a href="https://github.com/MikoAL/TAICA_w10/blob/main/wiki/concepts/frozen-evaluation.md">Wiki › 怎麼看數字</a></footer>
   <aside class="notes">按方向鍵逐一顯示答案。</aside>

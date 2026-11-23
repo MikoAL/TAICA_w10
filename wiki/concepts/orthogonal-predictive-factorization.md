@@ -8,7 +8,7 @@ sources: [jepa-anything]
 > 來源只有 [JEPA-Anything](../sources/jepa-anything.md)，v1 預印本。以下結果都是「論文報告」。[^jepa-anything-1]
 
 ## 它想解決什麼
-標準 [JEPA](jepa.md) 只有一個目標嵌入、一個 predictor。論文認為這樣容易預測的結構會主導訓練，比較弱的結構被忽略或收到互相衝突的梯度。[^jepa-anything-2]
+標準 [JEPA](jepa.md) 只有一個目標嵌入、一個 predictor。論文認為這樣容易預測或變異大的結構**可能**主導訓練，比較弱的結構**可能**收到互相衝突的梯度。[^jepa-anything-2]
 
 ## 核心想法（概念版）
 1. **拆**：用學到的基底矩陣，把目標狀態拆成幾個成分（因子）。[^jepa-anything-3]

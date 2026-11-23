@@ -1,0 +1,1 @@
+Same task and rules as `semantic-slides-pass2.md` in this folder (read it), but check ONLY slides 11, 14 and 16, and write `logs/run-3/semantic-slides-pass3.md` (title: # 語意檢查：簡報 → Wiki（run-3 第 3 次，第 11、14、16 頁）).

@@ -43,7 +43,7 @@ sources: [ijepa, meta-ijepa-blog]
 5. 每頁結尾有 `## 相關頁面`。
 6. 對 `jepa-anything`（v1 預印本）的結果一律寫「論文報告…」。
 8. **AI 自己加的解釋、比喻、角色說明，必須以「（AI 補充）」開頭**，自成一段或一個條列項。檢查程式會把它列為 `AI_NOTE` 警告，不算錯誤，但讀者看得出哪些不是來源內容。（run-1 加入）
-9. 表格數字標「（表 N）」，數字至少要出現在該來源原文；寫完後人工對照表格列，記錄在 `logs/run-N/table-check.md`。（run-1 加入）
+9. 表格數字標「（表 N）」，數字至少要出現在該來源原文；寫完後逐一對照原文的表格列，記錄在 `logs/run-N/table-check.md`。（run-1 加入）
 7. 來源之間有矛盾或宣傳用語時，寫進該頁的「注意」段落，不要擇一抹平。
 
 ## 4. 操作
@@ -52,7 +52,8 @@ sources: [ijepa, meta-ijepa-blog]
 2. **先討論**：整理重點（每點附逐字引文）、擬建頁面、要人決定的問題 → 給使用者看 → 使用者的回覆原文記進 `log.md`。
 3. 寫 `wiki/sources/<id>.md`，**寫完立刻**跑 `python3 scripts/check_wiki.py` 並修到 errors=0，再寫下一頁（run-2 改：不要整批寫完才檢查）。
 4. 新增／更新相關 `concepts/` 頁，同樣每頁寫完就檢查。表格數字當下對照原文表格列。
-5. 更新 `index.md`，在 `log.md` 加一筆。
+5. 開新的 subagent 做 **Wiki 語意檢查**：每個引文是不是真的支持那句話（保留語氣、比較對象、條件）。prompt 和結果存 `logs/run-N/`；PARTIAL／WRONG 先查原文再改（run-3 加入）。
+6. 更新 `index.md`，在 `log.md` 加一筆。時間用 `date` 或檔案時間，數字從檢查輸出複製，不憑記憶寫（run-3 加入）。
 
 ### Query（用 Wiki 回答問題／做簡報）
 - **只讀 `wiki/`，不讀 `raw/`、不靠記憶。** Wiki 沒有的東西，先回到 Ingest 補進 Wiki，再用。
@@ -67,11 +68,11 @@ sources: [ijepa, meta-ijepa-blog]
 - 每個內容頁 `<section data-wiki="concepts/jepa.md#錨點,...">`，頁尾 `<footer class="src">` 列出可點的 Wiki 頁（連到 GitHub）。
 - 簡報裡的數字必須出現在它引用的 Wiki 頁。
 - 數學只放一個式子（L2 距離）；VICReg 只講直覺。
-- **先寫 `slides/outline.md`，跑 `python3 scripts/check_outline.py` 到 errors=0，才寫 HTML**（run-2 加入）。大綱每頁要有「但書」欄：引用的 Wiki 頁有「注意」段落時必填，或寫「無：理由」。**理由不能是「放到別頁」**：引用了那一頁的數字或結論，那一頁的但書就要寫在同一頁（run-2 語意複查發現的漏洞；目前靠語意檢查把關，程式沒有擋）。
+- **先寫 `slides/outline.md`，跑 `python3 scripts/check_outline.py` 到 errors=0，才寫 HTML**（run-2 加入）。大綱每頁要有「但書」欄：引用的 Wiki 頁有「注意」段落時必填，或寫「無：理由」。**理由不能是「放到別頁」**：引用了那一頁的數字或結論，那一頁的但書就要寫在同一頁；只引用定義或方法時，可以寫「無：只用定義…」。run-3 起 `check_outline.py` 會擋「放到別頁」這類理由（`OUTLINE_CAVEAT_DEFERRED`），但不判斷但書寫得對不對。
 - 簡報不能出現 Wiki 沒有的最高級說法（最大、最好…）；Wiki 標（AI 補充）的內容在簡報要放 `.ai-note` 框。
 - `python3 scripts/check_slides.py` errors=0、語意檢查無 UNSUPPORTED／MISLEADING、`node scripts/check_browser.mjs` 無溢出，才算完成。
 
 ## 6. 流程（loop / graph）
 見 `README.md` 的流程圖。每輪檢查輸出存到 `logs/run-N/`，修正動作記進 `wiki/log.md`。
 - 全部確定性檢查：`python3 -m unittest discover tests && python3 scripts/check_wiki.py && python3 scripts/check_outline.py && python3 scripts/check_slides.py && node scripts/check_browser.mjs`
-- 語意檢查：開一個**沒看過前文**的 subagent，只給它 `index.html` 和被引用的 Wiki 頁，不准讀 `raw/`、`slides/`、`logs/`。
+- 語意檢查：開一個**沒看過前文**的 subagent，只給它 `index.html` 和被引用的 Wiki 頁，不准讀 `raw/`、`slides/`、`logs/`；要檢查講者備註、圖、測驗答案，而且不告訴它改過什麼。

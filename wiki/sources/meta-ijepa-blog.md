@@ -19,7 +19,7 @@ I-JEPA 學習的方式是比較圖片的抽象表示，而不是比較像素本�
 - 用多區塊遮罩（[multi-block masking](../concepts/masking-strategy.md)）引導模型學到語意特徵。[^meta-ijepa-blog-8]
 - 訓練成本：一個 632M 參數的 ViT，用 16 張 A100 GPU，不到 72 小時。[^meta-ijepa-blog-9]
 - 低樣本：每類只用 12 個標註範例就能分類 ImageNet。[^meta-ijepa-blog-10]
-- 未來方向：把 JEPA 推到影片、聲音等更豐富的資料。[^meta-ijepa-blog-11]
+- 未來方向：把 JEPA 推到影片、圖文配對等更豐富的資料。[^meta-ijepa-blog-11][^meta-ijepa-blog-14]
 
 ## 注意
 - 「其他方法通常要兩到 10 倍 GPU 時數」這句沒有說是跟哪些方法、在什麼設定下比。[^meta-ijepa-blog-12]
@@ -45,3 +45,4 @@ I-JEPA 學習的方式是比較圖片的抽象表示，而不是比較像素本�
 [^meta-ijepa-blog-11]: [meta-ijepa-blog](meta-ijepa-blog.md) — "It would be particularly interesting to advance JEPAs to learn more general world-models from richer modalities"
 [^meta-ijepa-blog-12]: [meta-ijepa-blog](meta-ijepa-blog.md) — "Other methods typically take two to 10 times more GPU-hours and achieve worse error rates when trained with the same amount of data."
 [^meta-ijepa-blog-13]: [meta-ijepa-blog](meta-ijepa-blog.md) — "We’re excited to introduce the first AI model based on a key component of LeCun’s vision."
+[^meta-ijepa-blog-14]: [meta-ijepa-blog](meta-ijepa-blog.md) — "We look forward to working to extend the JEPA approach to other domains, like image-text paired data and video data."
